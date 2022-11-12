@@ -22,12 +22,13 @@ body {
 }
 
 .message-container {
-
+  height: 50px;
+  margin-top: 10px;
 }
 
 .grid-container {
   width: 330px;
-  margin-bottom: 30px;
+  margin: 20px;
 }
 
 .grid-container .tile-row {
@@ -44,9 +45,10 @@ body {
   justify-content: center;
   align-items: center;
   color: white;
-  margin: 1.5px;
+  margin: 2px;
   font-size: xx-large;
   font-weight: bolder;
+  background-color: black;
 }
 
 .message-container .message {
@@ -54,4 +56,28 @@ body {
   border-radius: 10px;
   padding: 10px;
   margin: 0;
+}
+
+.key-container {
+  width: 510px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.key-container button {
+  width: 43px;
+  height: 55px;
+  border-radius: 4px;
+  border: none;
+  background-color: #818384;
+  color: white;
+  margin: 4px;
+}
+
+.key-container button:nth-child(11) {
+  margin-left: 30px;
+}
+.key-container button:nth-child(20), 
+.key-container button:nth-child(28) {
+  width: 68px;
 }
