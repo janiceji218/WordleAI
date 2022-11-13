@@ -1,6 +1,16 @@
 var curr_row = 0;
 var curr_tile = 0;
+
+/**
+ * Parse dictionary files
+ */
+// var text = fs.readFileSync("./valid-wordle-words.txt").toString('utf-8');
+// const wordle_dictionary = text.split("\n");
+// text = fs.readFileSync("./valid-wordle-words.txt").toString('utf-8');
+// const full_dictionary = text.split("\n");
+
 const word = 'HELLO';
+console.log("The answer is: " + word);
 const messageDisplay = document.querySelector('.message-container');
 const keyboard = document.querySelector('.key-container');
 const keys = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<]'];
@@ -13,6 +23,7 @@ let grid_state = [
   ['', '', '', '', '',],
 ]
 const colors = {'green': 'rgb(101, 131, 84)', 'yellow': 'rgb(139, 128, 0)', 'black': 'rgb(51, 51, 51)'}
+
 // Create on screen keyboard event listeners
 keys.forEach(letter => {
   const key = document.getElementById(letter);
@@ -60,8 +71,11 @@ const handleEnter = () => {
   if (curr_tile === 5 && curr_row < 6) {
     const guess = grid_state[curr_row].join('');
     console.log(guess);
-    // TODO: check if guess is in the dictionary
-    // if (in dictionary)
+    // check if guess is in the dictionary
+    // if (!full_dictionary.includes(guess)){
+    //   showMessage('not a word :(');
+    // }
+
     if (guess === word) { // check if guess is the correct word
       showMessage('yay!');
       grid_state[curr_row].forEach((_, i) => {

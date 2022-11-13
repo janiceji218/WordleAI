@@ -62,6 +62,7 @@ body {
   width: 510px;
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 .key-container button {
