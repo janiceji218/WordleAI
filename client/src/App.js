@@ -1,5 +1,7 @@
-import {useEffect, useState, useCallback} from "react";
+import {useEffect, useState} from "react";
 import './style.css';
+import {dictionary} from './data/full-dictionary.js';
+import {wordle_dictionary} from './data/wordle-dictionary.js';
 
 const API_URL = process.env.REACT_APP_API;
 const keys = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<]'];
@@ -18,17 +20,16 @@ const init_grid = [
 ];
 
 const chooseWord = () => {
-  return "HELLO";
+  let word = wordle_dictionary[Math.floor(Math.random() * wordle_dictionary.length)];
+  console.log("The wordle is: " + word);
+  return word.toUpperCase();
 }
 
-const checkValidWord = (word) => {
-  return true;
-}
+const init_wordle = chooseWord();
 
 function App() {
   const [data, setData] = useState("No data :(");
-  const [wordle, setWordle] = useState(chooseWord());
-  console.log('The wordle is: ' + wordle);
+  const [wordle, setWordle] = useState(init_wordle);
   const [curr_row, setRow] = useState(0);
   const [curr_tile, setTile] = useState(0);
   const [grid_state, setGridState] = useState(init_grid);
@@ -106,15 +107,16 @@ function App() {
   }
 
   const handleEnter = () => {
+    setMessage("");
     if (curr_tile === 5 && curr_row < 6) {
       const guess = grid_state[curr_row].join('');
       console.log(guess);
       // check if guess is in the dictionary
-      // if (!full_dictionary.includes(guess)){
-      //   showMessage('not a word :(');
-      // }
+      if (!dictionary.includes(guess.toLowerCase())){
+        setMessage('Not a word :(');
+      }
 
-      if (guess === wordle) { // check if guess is the correct word
+      else if (guess === wordle) { // check if guess is the correct word
         colorLetters();
         setGameOver(true);
         setMessage('yay :)');
