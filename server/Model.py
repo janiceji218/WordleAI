@@ -847,6 +847,7 @@ def simulate_games(first_guess=None,
             reductions=possibility_counts,
         ))
         # Print outcome
+        message = ""
         if not quiet:
             message = "\n".join([
                 "",
@@ -861,13 +862,18 @@ def simulate_games(first_guess=None,
                 f"Average: {average}",
                 *" " * 2,
             ])
-            if answer is not test_set[0]:
-                # Move cursor back up to the top of the message
-                n = len(message.split("\n")) + 1
-                print(("\033[F\033[K") * n)
-            else:
-                print("\r\033[K\n")
-            print(message)
+            # if answer is not test_set[0]:
+            #     # Move cursor back up to the top of the message
+            #     n = len(message.split("\n")) + 1
+            #     # message += (("\033[F\033[K") * n)
+            #     print (("\033[F\033[K") * n)
+            # else:
+            #     # message += ("\r\033[K\n")
+            #     print(("\r\033[K\n"))
+            f = open("test.txt", encoding="utf-8", mode="a") # will have to empty this file after every run
+            f.write(message)
+            f.close()
+            # print(message)
 
     final_result = dict(
         score_distribution=score_dist,
