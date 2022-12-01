@@ -1,1 +1,2 @@
-data/pattern_matrix.npy
+server/data/pattern_matrix.npy
+node_modules
