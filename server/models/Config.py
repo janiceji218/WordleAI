@@ -24,4 +24,7 @@ STATE_DIR = os.path.join(
     Path(os.path.dirname(os.path.realpath(__file__))).absolute(),
     "state",
 )
-PATTERN_GRID_DATA = os.path.join(DATA_DIR, "pattern_grid_data.pkl")
+PATTERN_GRID_DATA = os.path.join(STATE_DIR, "pattern_grid_data.pkl")
+GUESSES_FILE = os.path.join(STATE_DIR, "guesses.pkl")
+PATTERNS_FILE = os.path.join(STATE_DIR, "patterns.pkl")
+POSSIBILITIES_FILE = os.path.join(STATE_DIR, "possibilities.pkl")

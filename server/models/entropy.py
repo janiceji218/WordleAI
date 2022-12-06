@@ -5,7 +5,7 @@ import math
 import json
 import random
 import itertools as it
-import logging as log
+
 
 import Config
 import util
@@ -29,109 +29,10 @@ def sig(x):
 # Generating color patterns between strings, etc.
 
 
-def words_to_int_arrays(words):
-    return np.array([[ord(c) for c in w] for w in words], dtype=np.uint8)
 
 
-def generate_pattern_matrix(words1, words2):
-    """
-    A pattern for two words represents the wordle-similarity
-    pattern (grey -> 0, yellow -> 1, green -> 2) but as an integer
-    between 0 and 3^5. Reading this integer in ternary gives the
-    associated pattern.
-    This function computes the pairwise patterns between two lists
-    of words, returning the result as a grid of hash values. Since
-    this can be time-consuming, many operations that can be are vectorized
-    (perhaps at the expense of easier readibility), and the the result
-    is saved to file so that this only needs to be evaluated once, and
-    all remaining pattern matching is a lookup.
-    """
-
-    # Number of letters/words
-    nl = len(words1[0])
-    nw1 = len(words1)  # Number of words
-    nw2 = len(words2)  # Number of words
-
-    # Convert word lists to integer arrays
-    word_arr1, word_arr2 = map(words_to_int_arrays, (words1, words2))
-
-    # equality_grid keeps track of all equalities between all pairs
-    # of letters in words. Specifically, equality_grid[a, b, i, j]
-    # is true when words[i][a] == words[b][j]
-    equality_grid = np.zeros((nw1, nw2, nl, nl), dtype=bool)
-    for i, j in it.product(range(nl), range(nl)):
-        equality_grid[:, :, i, j] = np.equal.outer(word_arr1[:, i], word_arr2[:, j])
-
-    # full_pattern_matrix[a, b] should represent the 5-color pattern
-    # for guess a and answer b, with 0 -> grey, 1 -> yellow, 2 -> green
-    full_pattern_matrix = np.zeros((nw1, nw2, nl), dtype=np.uint8)
-
-    # Green pass
-    for i in range(nl):
-        matches = equality_grid[
-            :, :, i, i
-        ].flatten()  # matches[a, b] is true when words[a][i] = words[b][i]
-        full_pattern_matrix[:, :, i].flat[matches] = Config.EXACT
-
-        for k in range(nl):
-            # If it's a match, mark all elements associated with
-            # that letter, both from the guess and answer, as covered.
-            # That way, it won't trigger the yellow pass.
-            equality_grid[:, :, k, i].flat[matches] = False
-            equality_grid[:, :, i, k].flat[matches] = False
-
-    # Yellow pass
-    for i, j in it.product(range(nl), range(nl)):
-        matches = equality_grid[:, :, i, j].flatten()
-        full_pattern_matrix[:, :, i].flat[matches] = Config.MISPLACED
-        for k in range(nl):
-            # Similar to above, we want to mark this letter
-            # as taken care of, both for answer and guess
-            equality_grid[:, :, k, j].flat[matches] = False
-            equality_grid[:, :, i, k].flat[matches] = False
-
-    # Rather than representing a color pattern as a lists of integers,
-    # store it as a single integer, whose ternary representations corresponds
-    # to that list of integers.
-    pattern_matrix = np.dot(full_pattern_matrix, (3 ** np.arange(nl)).astype(np.uint8))
-
-    return pattern_matrix
 
 
-def generate_full_pattern_matrix():
-    words = util.get_word_list()
-    pattern_matrix = generate_pattern_matrix(words, words)
-    # Save to file
-    np.save(Config.PATTERN_MATRIX_FILE, pattern_matrix)
-    return pattern_matrix
-
-
-def get_pattern_matrix(words1, words2):
-    if not os.path.exists(Config.PATTERN_GRID_DATA):
-        if not os.path.exists(Config.PATTERN_MATRIX_FILE):
-            log.info(
-                "\n".join(
-                    [
-                        "Generating pattern matrix. This takes a minute, but",
-                        "the result will be saved to file so that it only",
-                        "needs to be computed once.",
-                    ]
-                )
-            )
-            generate_full_pattern_matrix()
-        
-        pattern_grid_data = dict()
-        pattern_grid_data["grid"] = np.load(Config.PATTERN_MATRIX_FILE)
-        pattern_grid_data["words_to_index"] = dict(zip(util.get_word_list(), it.count()))
-    else:
-        pattern_grid_data = util.get_pattern_grid_data()
-    full_grid = pattern_grid_data["grid"]
-    words_to_index = pattern_grid_data["words_to_index"]
-
-    indices1 = [words_to_index[w] for w in words1]
-    indices2 = [words_to_index[w] for w in words2]
-    util.update_pattern_grid_data(pattern_grid_data)
-    return full_grid[np.ix_(indices1, indices2)]
 
 
 
@@ -145,7 +46,7 @@ def get_pattern_distributions(allowed_words, possible_words, weights):
     that to bucket together words from possible_words which would produce
     the same pattern, adding together their corresponding probabilities.
     """
-    pattern_matrix = get_pattern_matrix(allowed_words, possible_words)
+    pattern_matrix = util.get_pattern_matrix(allowed_words, possible_words)
 
     n = len(allowed_words)
     distributions = np.zeros((n, 3**5))
