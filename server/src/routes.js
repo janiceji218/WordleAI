@@ -37,7 +37,11 @@ module.exports = () => {
   
       python.stdout.on('data', (data) => {
         console.log('Pipe data from python script ...');
-        res.json({msg: `Data from python, ${data}`});
+        var stringData = data.toString() // data was a buffer
+        stringData = stringData.toUpperCase()
+        stringData = stringData.replace(/'/g, '"') //replacing all ' with " to be recognized by json.parse
+        var arrayData = JSON.parse(stringData)
+        res.json({msg: arrayData});
       });
   
       python.stderr.on('data', (data) => {

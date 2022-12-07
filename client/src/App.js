@@ -50,6 +50,8 @@ function App() {
       const response = await fetch(url);
       const data = await response.json();
       setNextGuesses(data.msg);
+      setGreenHints(data.msg.slice(0, 6))
+      setYellowHints(data.msg.slice(0, 6))
       console.log("next guesses: ", data.msg)
     }
     getNextGuesses();
@@ -327,7 +329,6 @@ function App() {
                   </div>
               </div>
           </div>
-          <div>{nextGuesses}</div>
       </div>
     </>
   )
