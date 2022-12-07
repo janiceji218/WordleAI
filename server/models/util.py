@@ -158,7 +158,6 @@ def generate_pattern_matrix(words1, words2):
     # store it as a single integer, whose ternary representations corresponds
     # to that list of integers.
     pattern_matrix = np.dot(full_pattern_matrix, (3 ** np.arange(nl)).astype(np.uint8))
-
     return pattern_matrix
 
 
@@ -197,10 +196,10 @@ def get_pattern_matrix(words1, words2):
     update_pattern_grid_data(pattern_grid_data)
     return full_grid[np.ix_(indices1, indices2)]
 
-# def get_pattern(guess, answer):
-#     if os.path.exists(Config.PATTERN_GRID_DATA):
-#         pattern_grid_data = get_pattern_grid_data()
-#         saved_words = pattern_grid_data['words_to_index']
-#         if guess in saved_words and answer in saved_words:
-#             return get_pattern_matrix([guess], [answer])[0, 0]
-#     return generate_pattern_matrix([guess], [answer])[0, 0]
+def get_pattern(guess, answer):
+    if os.path.exists(Config.PATTERN_GRID_DATA):
+        pattern_grid_data = get_pattern_grid_data()
+        saved_words = pattern_grid_data['words_to_index']
+        if guess in saved_words and answer in saved_words:
+            return get_pattern_matrix([guess], [answer])[0, 0]
+    return generate_pattern_matrix([guess], [answer])[0, 0]
