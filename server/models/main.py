@@ -18,14 +18,14 @@ def suggested_guesses(k):
     
     prev_guesses, patterns, possibilities = util.get_guesses_patterns_possibilities()
     choices = all_words # TODO: always true?
-    print("Previous guesses: ", prev_guesses)
+    # print("Previous guesses: ", prev_guesses)
     if prev_guesses != []: # If not beginning of the game
         possibilities = util.get_possible_words(prev_guesses[-1], patterns[-1], possibilities)
         util.update_possibilities(possibilities)
-    print(len(possibilities), "possibilities now")
-    print(possibilities)
+    # print(len(possibilities), "possibilities now")
+    # print(possibilities)
 
-    print("Optimal ", k, " choices: ", opt.guess(choices, possibilities, priors, k))
+    print(opt.guess(choices, possibilities, priors, k))
 
 
 def update_game_state(guess, pattern):
