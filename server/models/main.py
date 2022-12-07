@@ -63,15 +63,15 @@ associated pattern. Ie convert to base 3
 """
 # Example: answer is "where"
 if __name__ == "__main__":
-    answer = sys.argv[1]
-    guesses = sys.argv[2]
-    if guesses == 'none': # parsed as none for the first guess to ensure there's still detectable content
-        guesses = []
-    else:
-        guesses = guesses.split(",")
-    update(answer, guesses)
-    # suggested_guesses(10)
-    # update_game_state("raise", 83) # pattern is 10002
-    # suggested_guesses(10)
-    # update_game_state("would", 162) # pattern is 20000
-    # suggested_guesses(10)
+    # answer = sys.argv[1]
+    # guesses = sys.argv[2]
+    # if guesses == 'none': # parsed as none for the first guess to ensure there's still detectable content
+    #     guesses = []
+    # else:
+    #     guesses = guesses.split(",")
+    # update(answer, guesses)
+    suggested_guesses(10)
+    update_game_state("raise", 83) # pattern is 10002
+    suggested_guesses(10)
+    update_game_state("would", 162) # pattern is 20000
+    suggested_guesses(10)

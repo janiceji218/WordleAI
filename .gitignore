@@ -1,3 +1,4 @@
 server/models/data/pattern_matrix.npy
 server/models/__pycache__
 node_modules
+server/models/state
