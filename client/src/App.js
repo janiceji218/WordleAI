@@ -28,29 +28,30 @@ const chooseWord = () => {
 const init_wordle = chooseWord();
 
 function App() {
+  const [data, setData] = useState("No data :(");
   const [prevGuesses, setPrevGuesses] = useState([]);
   const [nextGuesses, setNextGuesses] = useState([]);
   const [wordle, setWordle] = useState(init_wordle);
+  const [green_hints, setGreenHints] = useState(Array(6).fill(wordle));
+  const [yellow_hints, setYellowHints] = useState(Array(6).fill(wordle));
   const [curr_row, setRow] = useState(0);
   const [curr_tile, setTile] = useState(0);
-  const [grid_state, setGridState] = useState(init_grid);
+  const [grid_state, setGridState] = useState(init_grid); // Letter at each tile
   const [key_colors, setKeyColors] = useState(init_keys);
-  const [grid_colors, setGridColors] = useState(init_grid);
+  const [grid_colors, setGridColors] = useState(init_grid); // Color at each tile
   const [message, setMessage] = useState("");
   const [gameOver, setGameOver] = useState(false);
 
-  async function getNextGuesses() {
-    const prevGuessesParsed = prevGuesses.length ? prevGuesses.join(",") : "none" // Making this a string to avoid parsing brackets as string
-    console.log("prevGuessesParsed: ", prevGuessesParsed)
-    const url = `${API_URL}/getNextGuesses/${wordle}/${prevGuessesParsed}`; 
-    const response = await fetch(url);
-    const data = await response.json();
-    setNextGuesses(data.msg);
-    console.log("next guesses: ", data.msg)
-  }
-
   useEffect(() => {
-    console.log("mounted")
+    async function getNextGuesses() {
+      const prevGuessesParsed = prevGuesses.length ? prevGuesses.join(",") : "none" // Making this a string to avoid parsing brackets as string
+      console.log("prevGuessesParsed: ", prevGuessesParsed)
+      const url = `${API_URL}/getNextGuesses/${wordle}/${prevGuessesParsed}`; 
+      const response = await fetch(url);
+      const data = await response.json();
+      setNextGuesses(data.msg);
+      console.log("next guesses: ", data.msg)
+    }
     getNextGuesses();
   }, [prevGuesses]); 
 
@@ -127,6 +128,7 @@ function App() {
       }
       else { 
         colorLetters();
+        updateData(guess);
         if (curr_row === 5) {
           setGameOver(true);
           setMessage('The correct word was: ' + wordle);
@@ -140,6 +142,42 @@ function App() {
         setPrevGuesses(newPrevGuesses)
       }
     }
+  }
+
+  // FETCH AND UPDATE AI SUGGESTIONS HERE
+  const updateData = (guess) => {
+    /**
+     * INFO FORMAT:
+     * if: curr_row = 2
+     * info = 
+     *  [
+     *    [["A", "green"], ["B", "black"], ["O", "yellow"], ["U", "black"], ["T", "black"]],
+     *    [["A", "green"], ["B", "black"], ["O", "yellow"], ["U", "black"], ["T", "black"]],
+     *    [["A", "green"], ["B", "black"], ["O", "yellow"], ["U", "black"], ["T", "black"]]
+     *  ]
+     */
+    let info = [];
+     for (let i = 0; i <= curr_row; i++) {
+      let row = grid_state[i].map((letter, j) => {
+        return [letter, grid_colors[i][j]];
+      })
+      info.push(row);
+     }
+    /**
+     * FETCH AND UPDATE AI SUGGESTIONS HERE
+     *  GUESSED WORD: [guess] => string
+     *  PREVIOUS GUESSES + COLORS: info => string[][][]
+     *      e.g.
+     *        first guess, first letter: info[0][0][0] = 'A'
+     *        first guess, first color: info[0][0][1] = 'green'
+     *        second guess, first letter: info[1][0][0];
+     *        second guess, second color: info[1][1][1];
+     * 
+     *  Update the following states:
+     *      setData()
+     *      setGreenHints(): length currently set to 6. This can be adjusted later
+     *      setYellowHints(): length currently set to 6. This can be adjusted later
+     */
   }
 
   const addLetter = (letter) => {
@@ -166,6 +204,7 @@ function App() {
   const colorLetters = () => {
     let wordle_letters = Array(26).fill(0);
     let row_colors = Array(5).fill(colors.black);
+    let new_keys = {...key_colors};
     for (var i = 0; i < wordle.length; i++) {
       wordle_letters[wordle.charCodeAt(i) - 'A'.charCodeAt(0)] += 1;
     }
@@ -173,10 +212,11 @@ function App() {
     grid_state[curr_row].forEach((c, i) => {
       if (c === wordle.charAt(i)) { // green
         row_colors[i] = colors.green;
-        setKeyColors(key_colors => ({...key_colors, c: colors.green}));
+        new_keys[c] = colors.green;
         wordle_letters[c.charCodeAt(0) - 'A'.charCodeAt(0)] -= 1;
       }
     })
+
     // mark yellow and black letters
     grid_state[curr_row].forEach((c, i) => {
       let color = colors.black;
@@ -186,7 +226,10 @@ function App() {
       }
       if (row_colors[i] !== colors.green) {
         row_colors[i] = color;
-        setKeyColors(key_colors => ({...key_colors, c: color}));
+        if (new_keys[c] !== colors.green) {
+          new_keys[c] = color;
+        }
+        
       }
     })
     const new_grid = grid_colors.map((row, i) => {
@@ -197,6 +240,7 @@ function App() {
       }
     })
     setGridColors(new_grid);
+    setKeyColors(new_keys);
   }
 
   const reset = () => {
@@ -206,38 +250,85 @@ function App() {
     setRow(0);
     setTile(0);
     setMessage("");
-    setWordle(chooseWord());
+    const new_word = chooseWord();
+    setWordle(new_word);
+    setGreenHints(Array(6).fill(new_word)); // Update this later
+    setYellowHints(Array(6).fill(new_word)); // Update this later
     setGameOver(false);
+  }
+
+  const onClickHint = (hint) => {
+    const new_grid = grid_state.map((row, i) => {
+      if (i === curr_row) {
+        const new_row = row.map((l, j) => {
+          return hint.charAt(j);
+        })
+        return new_row;
+      } else {
+        return row;
+      }
+    })
+    setGridState(new_grid);
+    setTile(5);
   }
 
   return (
     <>
-      <div className="game-container"> 
-        <div className="title-container">
-            <h1>Wordle AI</h1>
-        </div>
-        <div className="message-container">
-          <div className="message">{message}</div>
-          <button className="play-again" hidden={!gameOver} onClick={reset}>Play Again</button>
-        </div>
-        <div className="grid-container">
-          {[0, 1, 2, 3, 4, 5].map((i) => (
-            <div class="tile-row" key={i}>
-              {[0, 1, 2, 3, 4].map((j) => (
-                  <div class="tile" key={j} style={{backgroundColor: grid_colors[i][j]}}>{grid_state[i][j]}</div>
-              ))}
-            </div>
-          ))
-          }
-        </div>
-        <div className="key-container">
-          {keys.map((letter) => (
-            <button key={letter} onClick={() => handleScreenKeyboardPress(letter)} style={{backgroundColor: key_colors[letter], borderColor: key_colors[letter]}}>{letter}</button>
-          ))}
-        </div>
+      <div className="main-container"> 
+          <div className="title-container">
+              <h1>Wordle AI</h1>
+          </div>
+          <div className="game-container">
+              <div className="wordle-container">
+                  <div className="message-container">
+                      <h3 className="message">{message}</h3>
+                      <button className="play-again" hidden={!gameOver} onClick={reset}>Play Again</button>
+                  </div>
+                  <div className="grid-container">
+                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                      <div class="tile-row" key={i}>
+                        {[0, 1, 2, 3, 4].map((j) => (
+                            <div class="tile" key={j} style={{backgroundColor: grid_colors[i][j]}}>{grid_state[i][j]}</div>
+                        ))}
+                      </div>
+                    ))
+                    }
+                  </div>
+                  <div className="key-container">
+                  {keys.map((letter) => (
+                    <button key={letter} onClick={() => handleScreenKeyboardPress(letter)} style={{backgroundColor: key_colors[letter], borderColor: key_colors[letter]}}>{letter}</button>
+                  ))}
+                  </div>
+              </div>
+              <div className="ai-container">
+                  <div className="hint-label">
+                      <h3>Most Green Letters</h3>
+                  </div>
+                  <div className="hint-container" id="green-hints">
+                      {[0, 1, 2, 3, 4, 5].map((i) => (
+                          <div className="hint" key={i} onClick={() => onClickHint(green_hints[i])}>
+                          {[0, 1, 2, 3, 4].map((j) => (
+                              <div className="hint-tile" key={j} word="HELLO" style={{backgroundColor: colors.green}}>{green_hints[i].charAt(j)}</div>
+                          ))}
+                          </div>
+                      ))}
+                  </div>
+                  <div className="hint-label">
+                      <h3>Most Yellow Letters</h3>
+                  </div>
+                  <div className="hint-container" id="yellow-hints">
+                      {[0, 1, 2, 3, 4, 5].map((i) => (
+                          <div className="hint" key={i} onClick={() => onClickHint(yellow_hints[i])}>
+                          {[0, 1, 2, 3, 4].map((j) => (
+                              <div className="hint-tile" key={j} style={{backgroundColor: colors.yellow}}>{yellow_hints[i].charAt(j)}</div>
+                          ))}
+                          </div>
+                      ))}
+                  </div>
+              </div>
+          </div>
+          <div>{nextGuesses}</div>
       </div>
-      <div className="ai-container"></div>
-      <div>{nextGuesses}</div>
     </>
   )
 }
