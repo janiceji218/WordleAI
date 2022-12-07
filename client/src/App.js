@@ -125,6 +125,7 @@ function App() {
       }
       else { 
         colorLetters();
+        console.log(key_colors);
         updateData(guess);
         if (curr_row === 5) {
           setGameOver(true);
@@ -198,6 +199,7 @@ function App() {
   const colorLetters = () => {
     let wordle_letters = Array(26).fill(0);
     let row_colors = Array(5).fill(colors.black);
+    let new_keys = {...key_colors};
     for (var i = 0; i < wordle.length; i++) {
       wordle_letters[wordle.charCodeAt(i) - 'A'.charCodeAt(0)] += 1;
     }
@@ -205,10 +207,11 @@ function App() {
     grid_state[curr_row].forEach((c, i) => {
       if (c === wordle.charAt(i)) { // green
         row_colors[i] = colors.green;
-        setKeyColors(key_colors => ({...key_colors, c: colors.green}));
+        new_keys[c] = colors.green;
         wordle_letters[c.charCodeAt(0) - 'A'.charCodeAt(0)] -= 1;
       }
     })
+
     // mark yellow and black letters
     grid_state[curr_row].forEach((c, i) => {
       let color = colors.black;
@@ -218,7 +221,7 @@ function App() {
       }
       if (row_colors[i] !== colors.green) {
         row_colors[i] = color;
-        setKeyColors(key_colors => ({...key_colors, c: color}));
+        new_keys[c] = color;
       }
     })
     const new_grid = grid_colors.map((row, i) => {
@@ -229,6 +232,7 @@ function App() {
       }
     })
     setGridColors(new_grid);
+    setKeyColors(new_keys);
   }
 
   const reset = () => {
