@@ -221,7 +221,10 @@ function App() {
       }
       if (row_colors[i] !== colors.green) {
         row_colors[i] = color;
-        new_keys[c] = color;
+        if (new_keys[c] !== colors.green) {
+          new_keys[c] = color;
+        }
+        
       }
     })
     const new_grid = grid_colors.map((row, i) => {
