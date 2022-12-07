@@ -24,9 +24,9 @@ def suggested_guesses(k):
         possibilities = util.get_possible_words(prev_guesses[-1], patterns[-1], possibilities)
         util.update_possibilities(possibilities)
     print(len(possibilities), "possibilities now")
-    print(possibilities)
+    # print(possibilities)
 
-    print(opt.guess(choices, possibilities, priors, k))
+    print("Optimal ", k, " choices: ", opt.guess(choices, possibilities, priors, k))
 
 
 def update_game_state(guess, pattern):
@@ -37,40 +37,21 @@ def update_game_state(guess, pattern):
     util.update_guesses_patterns(guesses, patterns)
 
 
-# def update(answer, guesses):
-#     # TODO: update pattern grid
-#     # TODO: figure out what pattern grid is
-#     patterns = []
-#     priors = get_frequency_based_priors()
-#     all_words = get_word_list(short=False)
-#     possibilities = list(filter(lambda w: priors[w] > 0, all_words))
-#     # TODO: STILL FAULTY
-#     for g in guesses:
-#         pattern = get_pattern(g, answer)
-#         patterns.append(pattern)
-#     if guesses:
-#         possibilities = get_possible_words(guesses[-1], patterns[-1], possibilities)
-#         next_guesses = optimal_guess(all_words, possibilities, priors)
-#         print("next_guesses: ", next_guesses)
-#         return next_guesses 
-#     else:
-#         # TODO: HANDLE FIRST GUESS
-#         return
+def update(answer, guesses):
+    if guesses:
+        update_game_state(guesses[-1], 0) # TODO: WRITE A FUNCTION TO FIGURE OUT PATTERN BASED ON WORD
+        suggested_guesses(10)
+    else: # first guess
+        reset()
+        suggested_guesses(10)
 
 def reset():
     """ When the game is done, erase files storing game state"""
-    # TODO: incomplete
+    print("resetting")
     os.remove(Config.PATTERN_GRID_DATA)
     os.remove(Config.GUESSES_FILE)
     os.remove(Config.PATTERNS_FILE)
     os.remove(Config.POSSIBILITIES_FILE)
-
-
-# if __name__ == "__main__":
-#     answer = sys.argv[1]
-#     guesses = sys.argv[2].split(",")
-#     print("guesses after splitting: ", guesses)
-#     update(answer, guesses)
 
 
 
@@ -81,10 +62,16 @@ between 0 and 3^5. Reading this integer in ternary gives the
 associated pattern. Ie convert to base 3
 """
 # Example: answer is "where"
-
-suggested_guesses(10)
-update_game_state("raise", 83) # pattern is 10002
-suggested_guesses(10)
-update_game_state("would", 162) # pattern is 20000
-suggested_guesses(10)
-reset()
+if __name__ == "__main__":
+    answer = sys.argv[1]
+    guesses = sys.argv[2]
+    if guesses == 'none': # parsed as none for the first guess to ensure there's still detectable content
+        guesses = []
+    else:
+        guesses = guesses.split(",")
+    update(answer, guesses)
+    # suggested_guesses(10)
+    # update_game_state("raise", 83) # pattern is 10002
+    # suggested_guesses(10)
+    # update_game_state("would", 162) # pattern is 20000
+    # suggested_guesses(10)

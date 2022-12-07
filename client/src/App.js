@@ -39,17 +39,18 @@ function App() {
   const [message, setMessage] = useState("");
   const [gameOver, setGameOver] = useState(false);
 
-  useEffect(() => {
-    async function getNextGuesses() {
-      console.log("use effect getNextGuesses function called")
-      const prevGuessesParsed = prevGuesses.join(",") // Making this a string to avoid parsing brackets as string
-      const url = `${API_URL}/getNextGuesses/${wordle}/${prevGuessesParsed}`; 
-      const response = await fetch(url);
-      const data = await response.json();
-      setNextGuesses(data.msg);
-      console.log(data.msg)
-    }
+  async function getNextGuesses() {
+    const prevGuessesParsed = prevGuesses.length ? prevGuesses.join(",") : "none" // Making this a string to avoid parsing brackets as string
+    console.log("prevGuessesParsed: ", prevGuessesParsed)
+    const url = `${API_URL}/getNextGuesses/${wordle}/${prevGuessesParsed}`; 
+    const response = await fetch(url);
+    const data = await response.json();
+    setNextGuesses(data.msg);
+    console.log("next guesses: ", data.msg)
+  }
 
+  useEffect(() => {
+    console.log("mounted")
     getNextGuesses();
   }, [prevGuesses]); 
 
@@ -114,9 +115,6 @@ function App() {
     setMessage("");
     if (curr_tile === 5 && curr_row < 6) {
       const guess = grid_state[curr_row].join('');
-      var newPrevGuesses = prevGuesses.slice()
-      newPrevGuesses.push(guess.toLowerCase())
-      setPrevGuesses(newPrevGuesses)
       // check if guess is in the dictionary
       if (!dictionary.includes(guess.toLowerCase())){
         setMessage('Not a word :(');
@@ -137,6 +135,9 @@ function App() {
         setRow(curr_row + 1);
         setTile(0);
         }
+        var newPrevGuesses = prevGuesses.slice()
+        newPrevGuesses.push(guess.toLowerCase())
+        setPrevGuesses(newPrevGuesses)
       }
     }
   }
