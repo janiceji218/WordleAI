@@ -47,7 +47,6 @@ function App() {
 
   useEffect(() => {
     async function getNextGuesses() {
-      setIsFetchingHints(true);
       const prevGuessesParsed = prevGuesses.length ? prevGuesses.join(",") : "none" // Making this a string to avoid parsing brackets as string
       console.log("prevGuessesParsed: ", prevGuessesParsed)
       const url = `${API_URL}/getNextGuesses/${wordle}/${prevGuessesParsed}`; 
@@ -66,7 +65,7 @@ function App() {
       console.log("next green guesses: ", data.green)
       console.log("next yellow guesses: ", data.yellow)
     }
-    getNextGuesses().then(() => {setIsFetchingHints(false);});
+    getNextGuesses().then(() => {setIsFetchingHints(false)});
   }, [prevGuesses]); 
 
   // Create physical keyboard event listeners
@@ -150,6 +149,7 @@ function App() {
         setRow(curr_row + 1);
         setTile(0);
         }
+        setIsFetchingHints(true);
         var newPrevGuesses = prevGuesses.slice()
         newPrevGuesses.push(guess.toLowerCase())
         setPrevGuesses(newPrevGuesses)
@@ -250,6 +250,7 @@ function App() {
   }
 
   const handleCheck = async () => {
+    setIsCheckingGuess(true);
     const guess = grid_state[curr_row].join('');
     // check if guess is in the dictionary
     if (dictionary.includes(guess.toLowerCase())){
@@ -282,7 +283,7 @@ function App() {
                         {[0, 1, 2, 3, 4].map((j) => (
                             <div class="tile" key={j} style={{backgroundColor: grid_colors[i][j]}}>{grid_state[i][j]}</div>
                         ))}
-                        <button onClick={handleCheck} style={i === curr_row ? {display: "flex"} : {display: "none"}}>CHECK</button>
+                        <button onClick={() => {handleCheck().then(setIsCheckingGuess(false))}} style={i === curr_row ? {display: "flex"} : {display: "none"}}>CHECK</button>
                         <img src={spinner} alt="loading" style={i === curr_row && isCheckingGuess ? {opacity: 1} : {opacity: 0}}></img>
                       </div>
                     ))
