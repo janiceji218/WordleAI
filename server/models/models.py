@@ -60,9 +60,9 @@ class MaxInfo(Optimizer):
         return [allowed_words[i] for i in idx]
 
 # TODO: Calculate different metrics: entropy
-# max_info = MaxInfo()
-# gs = max_info.guess(["guess", "where"], ["guess", "whole", "where"], util.get_true_wordle_prior(), 1)
-# print(gs)
-# import os
-# import Config
-# os.remove(Config.PATTERN_GRID_DATA)
+max_info = MaxInfo()
+gs = max_info.guess(["guess", "where"], ["guess", "whole", "where"], util.get_true_wordle_prior(), 1)
+print(gs)
+import os
+import Config
+os.remove(Config.PATTERN_GRID_DATA)

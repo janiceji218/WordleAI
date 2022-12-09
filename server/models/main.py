@@ -22,7 +22,7 @@ def suggested_guesses(k):
     if prev_guesses != []: # If not beginning of the game
         possibilities = util.get_possible_words(prev_guesses[-1], patterns[-1], possibilities)
         util.update_possibilities(possibilities)
-    # print(len(possibilities), "possibilities now")
+    print(len(possibilities), "possibilities now")
     # print(possibilities)
 
     print(opt.guess(choices, possibilities, priors, k))
@@ -65,18 +65,18 @@ associated pattern. Ie convert to base 3
 """
 # Example: answer is "where"
 if __name__ == "__main__":
-    answer = sys.argv[1]
-    guesses = sys.argv[2]
-    if guesses == 'none': # parsed as none for the first guess to ensure there's still detectable content
-        guesses = []
-    else:
-        guesses = guesses.split(",")
-    update(answer, guesses)
+    # answer = sys.argv[1]
+    # guesses = sys.argv[2]
+    # if guesses == 'none': # parsed as none for the first guess to ensure there's still detectable content
+    #     guesses = []
+    # else:
+    #     guesses = guesses.split(",")
+    # update(answer, guesses)
 
 
-    # suggested_guesses(10)
-    # update_game_state("raise", 83) # pattern is 10002
-    # suggested_guesses(10)
-    # update_game_state("would", 162) # pattern is 20000
-    # suggested_guesses(10)
-    # reset()
+    suggested_guesses(10)
+    update_game_state("raise", 83) # pattern is 10002
+    suggested_guesses(10)
+    update_game_state("would", 162) # pattern is 20000
+    suggested_guesses(10)
+    reset()
