@@ -19,6 +19,7 @@ const init_grid = [
   ['', '', '', '', '',],
   ['', '', '', '', '',],
 ];
+const NUM_GUESSES = 6
 
 const chooseWord = () => {
   let word = wordle_dictionary[Math.floor(Math.random() * wordle_dictionary.length)];
@@ -32,8 +33,8 @@ function App() {
   const [data, setData] = useState("No data :(");
   const [prevGuesses, setPrevGuesses] = useState([]);
   const [wordle, setWordle] = useState(init_wordle);
-  const [green_hints, setGreenHints] = useState(Array(6).fill(null));
-  const [yellow_hints, setYellowHints] = useState(Array(6).fill(" "));
+  const [green_hints, setGreenHints] = useState(Array(NUM_GUESSES).fill(null));
+  const [yellow_hints, setYellowHints] = useState(Array(NUM_GUESSES).fill(" "));
   const [curr_row, setRow] = useState(0);
   const [curr_tile, setTile] = useState(0);
   const [grid_state, setGridState] = useState(init_grid); // Letter at each tile
@@ -53,12 +54,12 @@ function App() {
       const response = await fetch(url);
       const data = await response.json();
       var greens = [...data.green]
-      for (let i = data.green.length; i <= 6; i++) {
+      for (let i = data.green.length; i <= NUM_GUESSES; i++) {
         greens.push(null)
       }
       setGreenHints(greens)
       var yellows = [...data.yellow]
-      for (let i = data.yellow.length; i <= 6; i++) {
+      for (let i = data.yellow.length; i <= NUM_GUESSES; i++) {
         yellows.push(null)
       }
       setYellowHints(yellows)
@@ -127,7 +128,7 @@ function App() {
 
   const handleEnter = () => {
     setMessage("");
-    if (curr_tile === 5 && curr_row < 6) {
+    if (curr_tile === 5 && curr_row < NUM_GUESSES) {
       const guess = grid_state[curr_row].join('');
       // check if guess is in the dictionary
       if (!dictionary.includes(guess.toLowerCase())){
@@ -265,8 +266,8 @@ function App() {
     setMessage("");
     const new_word = chooseWord();
     setWordle(new_word);
-    setGreenHints(Array(6).fill(new_word)); // Update this later
-    setYellowHints(Array(6).fill(new_word)); // Update this later
+    setGreenHints(Array(NUM_GUESSES).fill(new_word)); // Update this later
+    setYellowHints(Array(NUM_GUESSES).fill(new_word)); // Update this later
     setGameOver(false);
   }
 
@@ -283,6 +284,21 @@ function App() {
     })
     setGridState(new_grid);
     setTile(5);
+  }
+
+  const handleCheck = async () => {
+    const guess = grid_state[curr_row].join('');
+    // check if guess is in the dictionary
+    if (dictionary.includes(guess.toLowerCase())){
+      const url = `${API_URL}/guaranteeWin/${guess}/${NUM_GUESSES - curr_row}`; 
+      const response = await fetch(url);
+      const guaranteeWin = await response.json();
+      if (guaranteeWin) {
+        setMessage("Guaranteed will complete in 6 guesses")
+      } else {
+        setMessage("Not guaranteed will complete in 6 guesses")
+      }
+    }
   }
 
   return (
@@ -303,7 +319,7 @@ function App() {
                         {[0, 1, 2, 3, 4].map((j) => (
                             <div class="tile" key={j} style={{backgroundColor: grid_colors[i][j]}}>{grid_state[i][j]}</div>
                         ))}
-                        <button onClick={() => {}} style={i === curr_row ? {display: "flex"} : {display: "none"}}>CHECK</button>
+                        <button onClick={handleCheck} style={i === curr_row ? {display: "flex"} : {display: "none"}}>CHECK</button>
                         <img src={spinner} alt="loading" style={i === curr_row && isCheckingGuess ? {opacity: 1} : {opacity: 0}}></img>
                       </div>
                     ))
