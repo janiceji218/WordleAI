@@ -76,9 +76,14 @@ if __name__ == "__main__":
     # update(answer, guesses)
 
 # Example: answer is "where"
-    suggested_guesses(10)
-    update_game_state("raise", 163)  # pattern is 10002
-    suggested_guesses(10)
-    update_game_state("would", 2)  # pattern is 20000
-    suggested_guesses(10)
+    k = 2
+    suggested_guesses(k)
+    update_game_state("slate", 162)  # pattern is 00002
+    suggested_guesses(k)
+    update_game_state("price", 165)  # pattern is 01002
+    suggested_guesses(k)
+    update_game_state("gorge", 171)  # pattern is 00102
+    suggested_guesses(k)
+    update_game_state("rhyme", 169)  # pattern is 12002
+    suggested_guesses(k)
     reset()
