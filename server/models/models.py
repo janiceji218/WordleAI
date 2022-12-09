@@ -52,8 +52,8 @@ class MaxInfo(Optimizer):
         super().__init__("Maximizing Information")
     
     def guess(self, allowed_words, possible_words, priors, k):
-        if len(possible_words) == 1:
-            return possible_words[0]
+        if len(possible_words) <= k:
+            return possible_words
         weights = util.get_weights(possible_words, priors)
         ents = entropy.get_entropies(allowed_words, possible_words, weights)
         idx = np.argpartition(ents, -k)[-k:]
