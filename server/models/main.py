@@ -88,3 +88,14 @@ if __name__ == "__main__":
     # update_game_state("rhyme", 169)  # pattern is 12002
     # suggested_guesses(k)
     # reset()
+    # suggested_guesses(6)
+    # update_game_state("trace", 1) # pattern is 00001
+    # suggested_guesses(6)
+    # update_game_state("linos", 39) # pattern is 01110
+    # suggested_guesses(6)
+    # update_game_state("pudge", 2) # pattern is 00002
+    # suggested_guesses(6)
+    # update("point", [])
+    # update("point", ["trace"])
+    # update("point", ["trace", "linos"])
+    # update("point", ["trace", "linos", "pudge"])
