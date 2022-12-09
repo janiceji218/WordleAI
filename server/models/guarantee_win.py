@@ -4,6 +4,7 @@ if num_guess == 1 and num_poss > 1:
 Returns if there will still exist a guaranteed way to finish in 6 guesses if you pick this word
 """
 
+import sys
 import util
 
 def guaranteed_win(choice, possibilities, remain_guess):
@@ -33,14 +34,8 @@ def guaranteed_win(choice, possibilities, remain_guess):
                 return False
     return True    
 
-choice = "about"
-possible = util.get_word_list(short=True)[:20]
-# ['aback', 'abase', 'abate', 'abbey', 'abbot', 'abhor', 'abide', 'abled', 'abode', 'abort', 'about', 'above', 'abuse', 'abyss', 'acorn', 'acrid', 'actor', 'acute', 'adage', 'adapt', 'adept', 'admin', 'admit', 'adobe', 'adopt', 'adore', 'adorn', 'adult', 'affix', 'afire', 'afoot', 'afoul', 'after', 'again', 'agape', 'agate', 'agent', 'agile', 'aging', 'aglow', 'agony', 'agree', 'ahead', 'aider', 'aisle', 'alarm', 'album', 'alert', 'algae', 'alibi', 'alien', 'align', 'alike', 'alive', 'allay', 'alley', 'allot', 'allow', 'alloy', 'aloft', 'alone', 'along', 'aloof', 'aloud', 'alpha', 'altar', 'alter', 'amass', 'amaze', 'amber', 'amble', 'amend', 'amiss', 'amity', 'among', 'ample', 'amply', 'amuse', 'angel', 'anger', 'angle', 'angry', 'angst', 'anime', 'ankle', 'annex', 'annoy', 'annul', 'anode', 'antic', 'anvil', 'aorta', 'apart', 'aphid', 'aping', 'apnea', 'apple', 'apply', 'apron', 'aptly']
-# pattern_grid_data = util.get_pattern_grid_data()
-# saved_words = pattern_grid_data['words_to_index']
-# if choice in saved_words and "abide" in saved_words:
-#     print("yeah")
-
-
-# possible = ["slate", "where", "there", "while", "shell", "point", "yacht"]           
-print(guaranteed_win("abbot", possible, 3))
+if __name__ == "__main__":
+    _, _, possibilities = util.get_guesses_patterns_possibilities()
+    guess = sys.argv[1].lower()
+    remain_guess = sys.argv[2]
+    print(guaranteed_win(guess, possibilities, remain_guess))
