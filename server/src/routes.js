@@ -65,6 +65,7 @@ module.exports = () => {
         console.log('Pipe data from python script ...');
         var stringData = data.toString() // data was a buffer
         stringData = stringData.toUpperCase()
+        console.log("bool stringData: ", stringData)
         if (stringData == "TRUE") {
           res.json({guaranteeWin: true});
         } else {

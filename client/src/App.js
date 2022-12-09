@@ -258,7 +258,7 @@ function App() {
       const url = `${API_URL}/guaranteeWin/${guess}/${NUM_GUESSES - curr_row}`; 
       const response = await fetch(url);
       const guaranteeWin = await response.json();
-      if (guaranteeWin) {
+      if (guaranteeWin.guaranteeWin) {
         setMessage("Guaranteed will complete in 6 guesses")
       } else {
         setMessage("Not guaranteed will complete in 6 guesses")
@@ -284,7 +284,7 @@ function App() {
                         {[0, 1, 2, 3, 4].map((j) => (
                             <div class="tile" key={j} style={{backgroundColor: grid_colors[i][j]}}>{grid_state[i][j]}</div>
                         ))}
-                        <button onClick={() => {handleCheck().then(setIsCheckingGuess(false))}} style={i === curr_row ? {display: "flex"} : {display: "none"}}>CHECK</button>
+                        <button onClick={() => {handleCheck().then(() => {setIsCheckingGuess(false)})}} style={i === curr_row ? {display: "flex"} : {display: "none"}}>CHECK</button>
                         <img src={spinner} alt="loading" style={i === curr_row && isCheckingGuess ? {opacity: 1} : {opacity: 0}}></img>
                       </div>
                     ))
