@@ -85,6 +85,14 @@ body {
   background-color: #444444;
 }
 
+.grid-container img {
+  position: absolute;
+  align-self: center;
+  width: 40px;
+  height: 40px;
+  right: 51%;
+}
+
 .message-container .message {
   /* background-color: #444444; */
   border-radius: 10px;
@@ -152,6 +160,13 @@ body {
   align-items: center;
   margin: 5%;
   margin-top: 2%;
+}
+
+.ai-container img {
+  position: relative;
+  align-self: center;
+  width: 40px;
+  height: 40px;
 }
 
 .hint {

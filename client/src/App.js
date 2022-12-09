@@ -2,8 +2,7 @@ import {useEffect, useState} from "react";
 import './style.css';
 import {dictionary} from './data/full-dictionary.js';
 import {wordle_dictionary} from './data/wordle-dictionary.js';
-// import { Tooltip } from 'react-tooltip'
-// import Button from 'react-bootstrap/Button';
+import spinner from './assets/spinner.gif'
 
 const API_URL = process.env.REACT_APP_API;
 const keys = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<]'];
@@ -42,9 +41,12 @@ function App() {
   const [grid_colors, setGridColors] = useState(init_grid); // Color at each tile
   const [message, setMessage] = useState("");
   const [gameOver, setGameOver] = useState(false);
+  const [isFetchingHints, setIsFetchingHints] = useState(false);
+  const [isCheckingGuess, setIsCheckingGuess] = useState(false);
 
   useEffect(() => {
     async function getNextGuesses() {
+      setIsFetchingHints(true);
       const prevGuessesParsed = prevGuesses.length ? prevGuesses.join(",") : "none" // Making this a string to avoid parsing brackets as string
       console.log("prevGuessesParsed: ", prevGuessesParsed)
       const url = `${API_URL}/getNextGuesses/${wordle}/${prevGuessesParsed}`; 
@@ -63,7 +65,7 @@ function App() {
       console.log("next green guesses: ", data.green)
       console.log("next yellow guesses: ", data.yellow)
     }
-    getNextGuesses();
+    getNextGuesses().then(() => {setIsFetchingHints(false);});
   }, [prevGuesses]); 
 
   // Create physical keyboard event listeners
@@ -302,6 +304,7 @@ function App() {
                             <div class="tile" key={j} style={{backgroundColor: grid_colors[i][j]}}>{grid_state[i][j]}</div>
                         ))}
                         <button onClick={() => {}} style={i === curr_row ? {display: "flex"} : {display: "none"}}>CHECK</button>
+                        <img src={spinner} alt="loading" style={i === curr_row && isCheckingGuess ? {opacity: 1} : {opacity: 0}}></img>
                       </div>
                     ))
                     }
@@ -313,6 +316,7 @@ function App() {
                   </div>
               </div>
               <div className="ai-container">
+                  <img src={spinner} alt="loading" style={isFetchingHints ? {opacity: 1} : {opacity: 0}}></img>
                   <div className="hint-label">
                       <h3>Most Green Letters</h3>
                   </div>
