@@ -1,4 +1,5 @@
 import heapq as heap
+
 """
 PSEUDOCODE
 
@@ -52,7 +53,7 @@ def create_freq_map(possible_words):
         for letter in range(0, 26):
             count = 0
             for word in possible_words:
-                if ord(word[i]) - ord('a') == letter:
+                if ord(word[i]) - ord("a") == letter:
                     count += 1
             occurence.append(count)
         map.append(occurence)
@@ -61,17 +62,22 @@ def create_freq_map(possible_words):
 
 def get_greens(possible_words, k):
     map = create_freq_map(possible_words)
+    # print("map", map)
     top_words = []
     for word in possible_words:
         value = 0
         for i in range(0, 5):
-            letter = ord(word[i]) - ord('a')
+            letter = ord(word[i]) - ord("a")
             value += map[i][letter]
+        
         if len(top_words) > 0 and value > top_words[0].val:
             if len(top_words) == k:
                 heap.heappop(top_words)
+            # print("pushing", word)
             heap.heappush(top_words, Node(word, value))
-    return top_words
+        # else:
+        #     heap.heappush(top_words, Node(word, value))
+    return [(w.word, w.val) for w in top_words]
 
 
 class Node(object):

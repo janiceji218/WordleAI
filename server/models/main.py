@@ -13,8 +13,8 @@ import Config
 
 def suggested_guesses(k):
     """ Returns k suggested guesses and scoring metrics as a dictionary"""
-    opt = models.MaxInfo()
-    # opt = models.MaxGreen()
+    # opt = models.MaxInfo()
+    opt = models.MaxGreen()
     priors = util.get_true_wordle_prior()
     all_words = util.get_word_list(short=False)
 
