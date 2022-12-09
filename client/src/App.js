@@ -30,10 +30,9 @@ const init_wordle = chooseWord();
 function App() {
   const [data, setData] = useState("No data :(");
   const [prevGuesses, setPrevGuesses] = useState([]);
-  const [nextGuesses, setNextGuesses] = useState([]);
   const [wordle, setWordle] = useState(init_wordle);
-  const [green_hints, setGreenHints] = useState(Array(6).fill(wordle));
-  const [yellow_hints, setYellowHints] = useState(Array(6).fill(wordle));
+  const [green_hints, setGreenHints] = useState(Array(6).fill(null));
+  const [yellow_hints, setYellowHints] = useState(Array(6).fill(" "));
   const [curr_row, setRow] = useState(0);
   const [curr_tile, setTile] = useState(0);
   const [grid_state, setGridState] = useState(init_grid); // Letter at each tile
@@ -49,8 +48,18 @@ function App() {
       const url = `${API_URL}/getNextGuesses/${wordle}/${prevGuessesParsed}`; 
       const response = await fetch(url);
       const data = await response.json();
-      setNextGuesses(data.msg);
-      console.log("next guesses: ", data.msg)
+      var greens = [...data.green]
+      for (let i = data.green.length; i <= 6; i++) {
+        greens.push(null)
+      }
+      setGreenHints(greens)
+      var yellows = [...data.yellow]
+      for (let i = data.yellow.length; i <= 6; i++) {
+        yellows.push(null)
+      }
+      setYellowHints(yellows)
+      console.log("next green guesses: ", data.green)
+      console.log("next yellow guesses: ", data.yellow)
     }
     getNextGuesses();
   }, [prevGuesses]); 
@@ -306,9 +315,16 @@ function App() {
                   </div>
                   <div className="hint-container" id="green-hints">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
+                          green_hints[i] == null ?
+                          <div className="hint" key={i}>
+                          {[0, 1, 2, 3, 4].map((j) => (
+                            <div className="hint-tile" key={j} word="HELLO" style={{backgroundColor: colors.green}}>{" "}</div>
+                          ))}
+                          </div>
+                          :
                           <div className="hint" key={i} onClick={() => onClickHint(green_hints[i])}>
                           {[0, 1, 2, 3, 4].map((j) => (
-                              <div className="hint-tile" key={j} word="HELLO" style={{backgroundColor: colors.green}}>{green_hints[i].charAt(j)}</div>
+                            <div className="hint-tile" key={j} word="HELLO" style={{backgroundColor: colors.green}}>{green_hints[i].charAt(j)}</div>
                           ))}
                           </div>
                       ))}
@@ -318,6 +334,13 @@ function App() {
                   </div>
                   <div className="hint-container" id="yellow-hints">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
+                          yellow_hints[i] == null?
+                          <div className="hint" key={i}>
+                          {[0, 1, 2, 3, 4].map((j) => (
+                              <div className="hint-tile" key={j} style={{backgroundColor: colors.yellow}}>{" "}</div>
+                          ))}
+                          </div>
+                          :
                           <div className="hint" key={i} onClick={() => onClickHint(yellow_hints[i])}>
                           {[0, 1, 2, 3, 4].map((j) => (
                               <div className="hint-tile" key={j} style={{backgroundColor: colors.yellow}}>{yellow_hints[i].charAt(j)}</div>
@@ -327,7 +350,6 @@ function App() {
                   </div>
               </div>
           </div>
-          <div>{nextGuesses}</div>
       </div>
     </>
   )

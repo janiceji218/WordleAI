@@ -203,3 +203,15 @@ def get_pattern(guess, answer):
         if guess in saved_words and answer in saved_words:
             return get_pattern_matrix([guess], [answer])[0, 0]
     return generate_pattern_matrix([guess], [answer])[0, 0]
+    # base3 = ""
+    # for i in reversed(range(5)):
+    #     if guess[i] == answer[i]:
+    #         print("if")
+    #         base3 += "2"
+    #     elif guess[i] in answer:
+    #         print("elif")
+    #         base3 += "1" 
+    #     else:
+    #         print("in else")
+    #         base3 += "0"   
+    # return int(base3, 3)
