@@ -19,16 +19,19 @@ def suggested_guesses(k):
     all_words = util.get_word_list(short=False)
 
     prev_guesses, patterns, possibilities = util.get_guesses_patterns_possibilities()
-    choices = all_words  # TODO: always true?
-    # print("Previous guesses: ", prev_guesses)
-    if prev_guesses != []:  # If not beginning of the game
-        possibilities = util.get_possible_words(
-            prev_guesses[-1], patterns[-1], possibilities)
+    choices = all_words # TODO: always true?
+    if prev_guesses != []: # If not beginning of the game
+        possibilities = util.get_possible_words(prev_guesses[-1], patterns[-1], possibilities)
         util.update_possibilities(possibilities)
     # print(len(possibilities), "possibilities now")
-    # print(possibilities)
-    # print(len(possibilities))
-    print(opt.guess(choices, possibilities, priors, k))
+    # print("possibilities: ", possibilities)
+    # print("optimal guesses: ", opt.guess(choices, possibilities, priors, k))
+    green_guesses = opt.guess(choices, possibilities, priors, k) # TODO: UPDATE THIS
+    yellow_guesses = opt.guess(choices, possibilities, priors, k)
+    print({
+        "green": green_guesses,
+        "yellow": yellow_guesses
+    })
 
 
 def update_game_state(guess, pattern):
@@ -42,10 +45,10 @@ def update_game_state(guess, pattern):
 def update(answer, guesses):
     if guesses:
         update_game_state(guesses[-1], util.get_pattern(guesses[-1], answer))
-        suggested_guesses(10)
-    else:  # first guess
+        suggested_guesses(6)
+    else: # first guess
         reset()
-        suggested_guesses(10)
+        suggested_guesses(6)
 
 
 def reset():
@@ -67,23 +70,23 @@ between 0 and 3^5. Reading this integer in ternary gives the
 associated pattern. Ie convert to base 3
 """
 if __name__ == "__main__":
-    # answer = sys.argv[1]
-    # guesses = sys.argv[2]
-    # if guesses == 'none':  # parsed as none for the first guess to ensure there's still detectable content
-    #     guesses = []
-    # else:
-    #     guesses = guesses.split(",")
-    # update(answer, guesses)
+    answer = sys.argv[1]
+    guesses = sys.argv[2]
+    if guesses == 'none':  # parsed as none for the first guess to ensure there's still detectable content
+        guesses = []
+    else:
+        guesses = guesses.split(",")
+    update(answer, guesses)
 
 # Example: answer is "where"
-    k = 2
-    suggested_guesses(k)
-    update_game_state("slate", 162)  # pattern is 00002
-    suggested_guesses(k)
-    update_game_state("price", 165)  # pattern is 01002
-    suggested_guesses(k)
-    update_game_state("gorge", 171)  # pattern is 00102
-    suggested_guesses(k)
-    update_game_state("rhyme", 169)  # pattern is 12002
-    suggested_guesses(k)
-    reset()
+    # k = 2
+    # suggested_guesses(k)
+    # update_game_state("slate", 162)  # pattern is 00002
+    # suggested_guesses(k)
+    # update_game_state("price", 165)  # pattern is 01002
+    # suggested_guesses(k)
+    # update_game_state("gorge", 171)  # pattern is 00102
+    # suggested_guesses(k)
+    # update_game_state("rhyme", 169)  # pattern is 12002
+    # suggested_guesses(k)
+    # reset()
