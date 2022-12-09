@@ -142,7 +142,6 @@ function App() {
       }
       else { 
         colorLetters();
-        updateData(guess);
         if (curr_row === 5) {
           setGameOver(true);
           setMessage('The correct word was: ' + wordle);
@@ -156,42 +155,6 @@ function App() {
         setPrevGuesses(newPrevGuesses)
       }
     }
-  }
-
-  // FETCH AND UPDATE AI SUGGESTIONS HERE
-  const updateData = (guess) => {
-    /**
-     * INFO FORMAT:
-     * if: curr_row = 2
-     * info = 
-     *  [
-     *    [["A", "green"], ["B", "black"], ["O", "yellow"], ["U", "black"], ["T", "black"]],
-     *    [["A", "green"], ["B", "black"], ["O", "yellow"], ["U", "black"], ["T", "black"]],
-     *    [["A", "green"], ["B", "black"], ["O", "yellow"], ["U", "black"], ["T", "black"]]
-     *  ]
-     */
-    let info = [];
-     for (let i = 0; i <= curr_row; i++) {
-      let row = grid_state[i].map((letter, j) => {
-        return [letter, grid_colors[i][j]];
-      })
-      info.push(row);
-     }
-    /**
-     * FETCH AND UPDATE AI SUGGESTIONS HERE
-     *  GUESSED WORD: [guess] => string
-     *  PREVIOUS GUESSES + COLORS: info => string[][][]
-     *      e.g.
-     *        first guess, first letter: info[0][0][0] = 'A'
-     *        first guess, first color: info[0][0][1] = 'green'
-     *        second guess, first letter: info[1][0][0];
-     *        second guess, second color: info[1][1][1];
-     * 
-     *  Update the following states:
-     *      setData()
-     *      setGreenHints(): length currently set to 6. This can be adjusted later
-     *      setYellowHints(): length currently set to 6. This can be adjusted later
-     */
   }
 
   const addLetter = (letter) => {
