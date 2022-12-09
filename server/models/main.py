@@ -24,7 +24,12 @@ def suggested_guesses(k):
     # print(len(possibilities), "possibilities now")
     # print("possibilities: ", possibilities)
     # print("optimal guesses: ", opt.guess(choices, possibilities, priors, k))
-    print(opt.guess(choices, possibilities, priors, k))
+    green_guesses = opt.guess(choices, possibilities, priors, k) # TODO: UPDATE THIS
+    yellow_guesses = opt.guess(choices, possibilities, priors, k)
+    print({
+        "green": green_guesses,
+        "yellow": yellow_guesses
+    })
 
 
 def update_game_state(guess, pattern):
