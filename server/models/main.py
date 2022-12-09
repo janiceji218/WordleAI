@@ -76,7 +76,7 @@ if __name__ == "__main__":
     # reset()
     # suggested_guesses(10)
     # update_game_state("raise", 163) # pattern is 20001
-    suggested_guesses(10)
+    # suggested_guesses(10)
     # update_game_state("would", 2) # pattern is 00002
     # suggested_guesses(10)
     # update_game_state("which", 89) # pattern is 10022
