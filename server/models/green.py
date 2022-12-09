@@ -62,7 +62,6 @@ def create_freq_map(possible_words):
 
 def get_greens(possible_words, k):
     map = create_freq_map(possible_words)
-    # print("map", map)
     top_words = []
     for word in possible_words:
         value = 0
@@ -70,13 +69,10 @@ def get_greens(possible_words, k):
             letter = ord(word[i]) - ord("a")
             value += map[i][letter]
         
-        if len(top_words) > 0 and value > top_words[0].val:
+        if len(top_words) < k or value > top_words[0].val:
             if len(top_words) == k:
                 heap.heappop(top_words)
-            # print("pushing", word)
             heap.heappush(top_words, Node(word, value))
-        # else:
-        #     heap.heappush(top_words, Node(word, value))
     return [(w.word, w.val) for w in top_words]
 
 
