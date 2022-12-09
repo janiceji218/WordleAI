@@ -5,17 +5,17 @@ This module provides an interface with the front end
 import models
 import util
 import sys
+import os
 
-from Model import *
+# from Model import *
 import Config
 
 
 def suggested_guesses(k):
     """ Returns k suggested guesses and scoring metrics as a dictionary"""
-    opt = models.MaxInfo()
     priors = util.get_true_wordle_prior()
     all_words = util.get_word_list(short=False)
-    
+
     prev_guesses, patterns, possibilities = util.get_guesses_patterns_possibilities()
     choices = all_words # TODO: always true?
     if prev_guesses != []: # If not beginning of the game
@@ -24,7 +24,12 @@ def suggested_guesses(k):
     # print(len(possibilities), "possibilities now")
     # print("possibilities: ", possibilities)
     # print("optimal guesses: ", opt.guess(choices, possibilities, priors, k))
-    print(opt.guess(choices, possibilities, priors, k))
+    green_guesses = models.MaxGreen().guess(choices, possibilities, priors, k) 
+    yellow_guesses = models.MaxInfo().guess(choices, possibilities, priors, k)
+    print({
+        "green": green_guesses,
+        "yellow": yellow_guesses
+    })
 
 
 def update_game_state(guess, pattern):
@@ -43,6 +48,7 @@ def update(answer, guesses):
         reset()
         suggested_guesses(6)
 
+
 def reset():
     """ When the game is done, erase files storing game state"""
     if os.path.exists(Config.PATTERN_GRID_DATA):
@@ -55,7 +61,6 @@ def reset():
         os.remove(Config.POSSIBILITIES_FILE)
 
 
-
 """
 A pattern for two words represents the wordle-similarity
 pattern (grey -> 0, yellow -> 1, green -> 2) but as an integer
@@ -65,13 +70,23 @@ associated pattern. Ie convert to base 3
 if __name__ == "__main__":
     answer = sys.argv[1].lower()
     guesses = sys.argv[2].lower()
-    if guesses == 'none': # parsed as none for the first guess to ensure there's still detectable content
+    if guesses == 'none':  # parsed as none for the first guess to ensure there's still detectable content
         guesses = []
     else:
         guesses = guesses.split(",")
     update(answer, guesses)
 
-    # Example: answer is "point"
+# Example: answer is "where"
+    # k = 2
+    # suggested_guesses(k)
+    # update_game_state("slate", 162)  # pattern is 00002
+    # suggested_guesses(k)
+    # update_game_state("price", 165)  # pattern is 01002
+    # suggested_guesses(k)
+    # update_game_state("gorge", 171)  # pattern is 00102
+    # suggested_guesses(k)
+    # update_game_state("rhyme", 169)  # pattern is 12002
+    # suggested_guesses(k)
     # reset()
     # suggested_guesses(6)
     # update_game_state("trace", 1) # pattern is 00001

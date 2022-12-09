@@ -40,8 +40,9 @@ module.exports = () => {
         var stringData = data.toString() // data was a buffer
         stringData = stringData.toUpperCase()
         stringData = stringData.replace(/'/g, '"') //replacing all ' with " to be recognized by json.parse
-        var arrayData = JSON.parse(stringData)
-        res.json({green: arrayData, yellow: arrayData});
+        var dictData = JSON.parse(stringData)
+        console.log("dictData: ", dictData)
+        res.json({green: dictData['GREEN'], yellow: dictData['YELLOW']});
       });
   
       python.stderr.on('data', (data) => {

@@ -35,7 +35,7 @@ function App() {
   const [prevGuesses, setPrevGuesses] = useState([]);
   const [wordle, setWordle] = useState(init_wordle);
   const [green_hints, setGreenHints] = useState(Array(NUM_GUESSES).fill(null));
-  const [yellow_hints, setYellowHints] = useState(Array(NUM_GUESSES).fill(" "));
+  const [yellow_hints, setYellowHints] = useState(Array(NUM_GUESSES).fill(null));
   const [curr_row, setRow] = useState(0);
   const [curr_tile, setTile] = useState(0);
   const [grid_state, setGridState] = useState(init_grid); // Letter at each tile
@@ -264,9 +264,10 @@ function App() {
     setMessage("");
     const new_word = chooseWord();
     setWordle(new_word);
-    setGreenHints(Array(NUM_GUESSES).fill(new_word)); // Update this later
-    setYellowHints(Array(NUM_GUESSES).fill(new_word)); // Update this later
+    setGreenHints(Array(NUM_GUESSES).fill(null)); 
+    setYellowHints(Array(NUM_GUESSES).fill(null)); 
     setGameOver(false);
+    setPrevGuesses([])
   }
 
   const onClickHint = (hint) => {
