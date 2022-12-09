@@ -26,12 +26,14 @@ where nk (for 1≤k≤6) is the number of hidden (solution) words for which the 
 
 # brute force optimal guess: enabled starting round 2?
 
+
+
+
 import numpy as np
 from abc import abstractclassmethod
 import util
 import entropy
-
-
+import green
 class Optimizer:
 
     def __init__(self, name):
@@ -46,11 +48,13 @@ class Optimizer:
         pass
 
 # from line 473
+
+
 class MaxInfo(Optimizer):
 
     def __init__(self):
         super().__init__("Maximizing Information")
-    
+
     def guess(self, allowed_words, possible_words, priors, k):
         if len(possible_words) == 1:
             return possible_words[0]
@@ -66,3 +70,13 @@ class MaxInfo(Optimizer):
 # import os
 # import Config
 # os.remove(Config.PATTERN_GRID_DATA)
+
+
+class MaxGreen(Optimizer):
+    def __init__(self):
+        super().__init__("Maximizing Green Letters")
+
+    def guess(self, allowed_words, possible_words, priors, k):
+        if len(possible_words) == 1:
+            return possible_words[0]
+        return green.get_greens(possible_words, k)
