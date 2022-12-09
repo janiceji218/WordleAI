@@ -22,8 +22,8 @@ def suggested_guesses(k):
     if prev_guesses != []: # If not beginning of the game
         possibilities = util.get_possible_words(prev_guesses[-1], patterns[-1], possibilities)
         util.update_possibilities(possibilities)
-    # print(len(possibilities), "possibilities now")
-    # print(possibilities)
+    print(len(possibilities), "possibilities now")
+    print(possibilities)
 
     print(opt.guess(choices, possibilities, priors, k))
 
@@ -59,11 +59,10 @@ def reset():
 
 """
 A pattern for two words represents the wordle-similarity
-pattern (grey -> 0, yellow -> 2, green -> 1) but as an integer
+pattern (grey -> 0, yellow -> 1, green -> 2) but as an integer
 between 0 and 3^5. Reading this integer in ternary gives the
 associated pattern. Ie convert to base 3
 """
-# Example: answer is "where"
 if __name__ == "__main__":
     answer = sys.argv[1]
     guesses = sys.argv[2]
@@ -73,10 +72,12 @@ if __name__ == "__main__":
         guesses = guesses.split(",")
     update(answer, guesses)
 
-
-    # suggested_guesses(10)
-    # update_game_state("raise", 83) # pattern is 10002
-    # suggested_guesses(10)
-    # update_game_state("would", 162) # pattern is 20000
-    # suggested_guesses(10)
+    # Example: answer is "where"
     # reset()
+    # suggested_guesses(10)
+    # update_game_state("raise", 163) # pattern is 20001
+    suggested_guesses(10)
+    # update_game_state("would", 2) # pattern is 00002
+    # suggested_guesses(10)
+    # update_game_state("which", 89) # pattern is 10022
+    # suggested_guesses(10)

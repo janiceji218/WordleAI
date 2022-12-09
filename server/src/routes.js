@@ -41,7 +41,7 @@ module.exports = () => {
         stringData = stringData.toUpperCase()
         stringData = stringData.replace(/'/g, '"') //replacing all ' with " to be recognized by json.parse
         var arrayData = JSON.parse(stringData)
-        res.json({msg: arrayData});
+        res.json({green: arrayData, yellow: arrayData});
       });
   
       python.stderr.on('data', (data) => {
