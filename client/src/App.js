@@ -2,8 +2,7 @@ import {useEffect, useState} from "react";
 import './style.css';
 import {dictionary} from './data/full-dictionary.js';
 import {wordle_dictionary} from './data/wordle-dictionary.js';
-// import { Tooltip } from 'react-tooltip'
-// import Button from 'react-bootstrap/Button';
+import spinner from './assets/spinner.gif'
 
 const API_URL = process.env.REACT_APP_API;
 const keys = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<]'];
@@ -43,6 +42,8 @@ function App() {
   const [grid_colors, setGridColors] = useState(init_grid); // Color at each tile
   const [message, setMessage] = useState("");
   const [gameOver, setGameOver] = useState(false);
+  const [isFetchingHints, setIsFetchingHints] = useState(false);
+  const [isCheckingGuess, setIsCheckingGuess] = useState(false);
 
   useEffect(() => {
     async function getNextGuesses() {
@@ -64,7 +65,7 @@ function App() {
       console.log("next green guesses: ", data.green)
       console.log("next yellow guesses: ", data.yellow)
     }
-    getNextGuesses();
+    getNextGuesses().then(() => {setIsFetchingHints(false)});
   }, [prevGuesses]); 
 
   // Create physical keyboard event listeners
@@ -140,7 +141,6 @@ function App() {
       }
       else { 
         colorLetters();
-        updateData(guess);
         if (curr_row === 5) {
           setGameOver(true);
           setMessage('The correct word was: ' + wordle);
@@ -149,47 +149,12 @@ function App() {
         setRow(curr_row + 1);
         setTile(0);
         }
+        setIsFetchingHints(true);
         var newPrevGuesses = prevGuesses.slice()
         newPrevGuesses.push(guess.toLowerCase())
         setPrevGuesses(newPrevGuesses)
       }
     }
-  }
-
-  // FETCH AND UPDATE AI SUGGESTIONS HERE
-  const updateData = (guess) => {
-    /**
-     * INFO FORMAT:
-     * if: curr_row = 2
-     * info = 
-     *  [
-     *    [["A", "green"], ["B", "black"], ["O", "yellow"], ["U", "black"], ["T", "black"]],
-     *    [["A", "green"], ["B", "black"], ["O", "yellow"], ["U", "black"], ["T", "black"]],
-     *    [["A", "green"], ["B", "black"], ["O", "yellow"], ["U", "black"], ["T", "black"]]
-     *  ]
-     */
-    let info = [];
-     for (let i = 0; i <= curr_row; i++) {
-      let row = grid_state[i].map((letter, j) => {
-        return [letter, grid_colors[i][j]];
-      })
-      info.push(row);
-     }
-    /**
-     * FETCH AND UPDATE AI SUGGESTIONS HERE
-     *  GUESSED WORD: [guess] => string
-     *  PREVIOUS GUESSES + COLORS: info => string[][][]
-     *      e.g.
-     *        first guess, first letter: info[0][0][0] = 'A'
-     *        first guess, first color: info[0][0][1] = 'green'
-     *        second guess, first letter: info[1][0][0];
-     *        second guess, second color: info[1][1][1];
-     * 
-     *  Update the following states:
-     *      setData()
-     *      setGreenHints(): length currently set to 6. This can be adjusted later
-     *      setYellowHints(): length currently set to 6. This can be adjusted later
-     */
   }
 
   const addLetter = (letter) => {
@@ -286,6 +251,7 @@ function App() {
   }
 
   const handleCheck = async () => {
+    setIsCheckingGuess(true);
     const guess = grid_state[curr_row].join('');
     // check if guess is in the dictionary
     if (dictionary.includes(guess.toLowerCase())){
@@ -318,7 +284,8 @@ function App() {
                         {[0, 1, 2, 3, 4].map((j) => (
                             <div class="tile" key={j} style={{backgroundColor: grid_colors[i][j]}}>{grid_state[i][j]}</div>
                         ))}
-                        <button onClick={handleCheck} style={i === curr_row ? {display: "flex"} : {display: "none"}}>CHECK</button>
+                        <button onClick={() => {handleCheck().then(setIsCheckingGuess(false))}} style={i === curr_row ? {display: "flex"} : {display: "none"}}>CHECK</button>
+                        <img src={spinner} alt="loading" style={i === curr_row && isCheckingGuess ? {opacity: 1} : {opacity: 0}}></img>
                       </div>
                     ))
                     }
@@ -330,6 +297,7 @@ function App() {
                   </div>
               </div>
               <div className="ai-container">
+                  <img src={spinner} alt="loading" style={isFetchingHints ? {opacity: 1} : {opacity: 0}}></img>
                   <div className="hint-label">
                       <h3>Most Green Letters</h3>
                   </div>
