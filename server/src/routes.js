@@ -50,7 +50,33 @@ module.exports = () => {
   
       // in close event we are sure that stream from child process is closed
       python.on('close', async (code) => {
-        console.log(`childt process close all stdio with code ${code}`);
+        console.log(`child process for getNextGuesses close all stdio with code ${code}`);
+      })
+    });
+
+    router.get('/guaranteeWin/:guess', async (req, res) => {
+      const guess = req.params.guess
+      const { spawn } = require('child_process')
+      const python = spawn('py', ['models/guarantee_win.py', guess])
+  
+      python.stdout.on('data', (data) => {
+        console.log('Pipe data from python script ...');
+        var stringData = data.toString() // data was a buffer
+        stringData = stringData.toUpperCase()
+        if (stringData == "TRUE") {
+          res.json({guaranteeWin: true});
+        } else {
+          res.json({guaranteeWin: false});
+        }
+      });
+  
+      python.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+      });
+  
+      // in close event we are sure that stream from child process is closed
+      python.on('close', async (code) => {
+        console.log(`child process for guaranteeWin close all stdio with code ${code}`);
       })
     });
   
