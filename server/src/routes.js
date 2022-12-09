@@ -54,10 +54,11 @@ module.exports = () => {
       })
     });
 
-    router.get('/guaranteeWin/:guess', async (req, res) => {
+    router.get('/guaranteeWin/:guess/:remainGuess', async (req, res) => {
       const guess = req.params.guess
+      const remainGuess = req.params.remainGuess
       const { spawn } = require('child_process')
-      const python = spawn('py', ['models/guarantee_win.py', guess])
+      const python = spawn('py', ['models/guarantee_win.py', guess, remainGuess])
   
       python.stdout.on('data', (data) => {
         console.log('Pipe data from python script ...');
