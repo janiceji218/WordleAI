@@ -13,8 +13,6 @@ import Config
 
 def suggested_guesses(k):
     """ Returns k suggested guesses and scoring metrics as a dictionary"""
-    # opt = models.MaxInfo()
-    opt = models.MaxGreen()
     priors = util.get_true_wordle_prior()
     all_words = util.get_word_list(short=False)
 
@@ -26,8 +24,8 @@ def suggested_guesses(k):
     # print(len(possibilities), "possibilities now")
     # print("possibilities: ", possibilities)
     # print("optimal guesses: ", opt.guess(choices, possibilities, priors, k))
-    green_guesses = opt.guess(choices, possibilities, priors, k) # TODO: UPDATE THIS
-    yellow_guesses = opt.guess(choices, possibilities, priors, k)
+    green_guesses = models.MaxGreen().guess(choices, possibilities, priors, k) # TODO: UPDATE THIS
+    yellow_guesses = models.MaxInfo().guess(choices, possibilities, priors, k)
     print({
         "green": green_guesses,
         "yellow": yellow_guesses
