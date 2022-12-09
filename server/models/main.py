@@ -5,6 +5,7 @@ This module provides an interface with the front end
 import models
 import util
 import sys
+import os
 
 # from Model import *
 import Config
@@ -65,7 +66,6 @@ pattern (grey -> 0, yellow -> 1, green -> 2) but as an integer
 between 0 and 3^5. Reading this integer in ternary gives the
 associated pattern. Ie convert to base 3
 """
-# Example: answer is "where"
 if __name__ == "__main__":
     # answer = sys.argv[1]
     # guesses = sys.argv[2]
@@ -75,9 +75,10 @@ if __name__ == "__main__":
     #     guesses = guesses.split(",")
     # update(answer, guesses)
 
+# Example: answer is "where"
     suggested_guesses(10)
-    update_game_state("raise", 83)  # pattern is 10002
+    update_game_state("raise", 163)  # pattern is 10002
     suggested_guesses(10)
-    update_game_state("would", 162)  # pattern is 20000
+    update_game_state("would", 2)  # pattern is 20000
     suggested_guesses(10)
     reset()
