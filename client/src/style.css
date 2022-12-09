@@ -68,6 +68,23 @@ body {
   background-color: black;
 }
 
+.grid-container button {
+  position: absolute;
+  display: flex;
+  align-self:center;
+  background-color: black;
+  padding: 10px;
+  right: 54%;
+  border-radius: 8px;
+  font-size: large;
+  font-weight: bolder;
+  transition: all .2s ease;
+}
+
+.grid-container button:hover {
+  background-color: #444444;
+}
+
 .message-container .message {
   /* background-color: #444444; */
   border-radius: 10px;

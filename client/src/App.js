@@ -2,6 +2,8 @@ import {useEffect, useState} from "react";
 import './style.css';
 import {dictionary} from './data/full-dictionary.js';
 import {wordle_dictionary} from './data/wordle-dictionary.js';
+// import { Tooltip } from 'react-tooltip'
+// import Button from 'react-bootstrap/Button';
 
 const API_URL = process.env.REACT_APP_API;
 const keys = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<]'];
@@ -299,6 +301,7 @@ function App() {
                         {[0, 1, 2, 3, 4].map((j) => (
                             <div class="tile" key={j} style={{backgroundColor: grid_colors[i][j]}}>{grid_state[i][j]}</div>
                         ))}
+                        <button onClick={() => {}} style={i === curr_row ? {display: "flex"} : {display: "none"}}>CHECK</button>
                       </div>
                     ))
                     }
