@@ -64,9 +64,8 @@ module.exports = () => {
       python.stdout.on('data', (data) => {
         console.log('Pipe data from python script ...');
         var stringData = data.toString() // data was a buffer
-        stringData = stringData.toUpperCase()
-        console.log("bool stringData: ", stringData)
-        if (stringData == "TRUE") {
+        stringData = stringData.toLowerCase().trim() //string data has trailing whitespaces
+        if (stringData === "true") {
           res.json({guaranteeWin: true});
         } else {
           res.json({guaranteeWin: false});
