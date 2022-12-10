@@ -92,7 +92,7 @@ def get_greens(possible_words, k):
             if len(top_words) == k:
                 heap.heappop(top_words)
             heap.heappush(top_words, Node(word, value))
-    return [w.word for w in top_words]
+    return [w.word for w in top_words], [w.val for w in top_words]
 
 
 class Node(object):

@@ -56,12 +56,13 @@ class MaxInfo(Optimizer):
         super().__init__("Maximizing Information")
 
     def guess(self, allowed_words, possible_words, priors, k):
-        if len(possible_words) <= k:
-            return possible_words
         weights = util.get_weights(possible_words, priors)
         ents = entropy.get_entropies(allowed_words, possible_words, weights)
-        idx = np.argpartition(ents, -k)[-k:]
-        return [allowed_words[i] for i in idx]
+        if len(possible_words) <= k:
+            return possible_words, [] # TODO: CHECK IF WE CAN RETURN ENTROPY HERE (DOES IT MAKE SENSE TO RETURN ENTROPY)
+        k_left = k if len(possible_words) > k else len(possible_words)
+        idx = np.argpartition(ents, -k_left)[-k_left:]
+        return [allowed_words[i] for i in idx], [round(ents[i], 3) for i in idx]
 
 # TODO: Calculate different metrics: entropy
 # max_info = MaxInfo()
@@ -77,6 +78,4 @@ class MaxGreen(Optimizer):
         super().__init__("Maximizing Green Letters")
 
     def guess(self, allowed_words, possible_words, priors, k):
-        if len(possible_words) <= k:
-            return possible_words
         return green.get_greens(possible_words, k)

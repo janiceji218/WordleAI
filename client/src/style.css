@@ -192,3 +192,7 @@ body {
   font-weight: bolder;
   background-color: black;
 }
+
+.score {
+  margin-left: 5px
+}
