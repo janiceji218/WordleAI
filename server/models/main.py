@@ -22,12 +22,12 @@ def suggested_guesses(k):
         possibilities = util.get_possible_words(prev_guesses[-1], patterns[-1], possibilities)
         util.update_possibilities(possibilities)
     green_guesses, green_scores = models.MaxGreen().guess(choices, possibilities, priors, k) 
-    yellow_guesses, yellow_entropy = models.MaxInfo().guess(choices, possibilities, priors, k)
+    yellow_guesses, yellow_entropies = models.MaxInfo().guess(choices, possibilities, priors, k)
     print({
         "green": green_guesses,
-        "green_score": green_scores,
+        "green_scores": green_scores,
         "yellow": yellow_guesses,
-        "yellow_entropy": yellow_entropy,
+        "yellow_entropies": yellow_entropies,
         "remaining_sample_size": len(possibilities)
     })
 

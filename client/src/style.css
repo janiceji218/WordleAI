@@ -141,8 +141,6 @@ body {
   /* justify-content: space-between; */
   align-items: center;
   margin-left: 8%;
-  margin-top: 3%;
-  /* right: 10%; */
 }
 .hint-label {
   position: relative;
@@ -160,6 +158,10 @@ body {
   align-items: center;
   margin: 5%;
   margin-top: 2%;
+}
+
+.word-container {
+  margin-bottom: 5%;
 }
 
 .ai-container img {
@@ -194,5 +196,5 @@ body {
 }
 
 .score {
-  margin-left: 5px
+  margin: 8px
 }
