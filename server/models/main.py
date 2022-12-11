@@ -21,9 +21,6 @@ def suggested_guesses(k):
     if prev_guesses != []: # If not beginning of the game
         possibilities = util.get_possible_words(prev_guesses[-1], patterns[-1], possibilities)
         util.update_possibilities(possibilities)
-    # print(len(possibilities), "possibilities now")
-    # print("possibilities: ", possibilities)
-    # print("optimal guesses: ", opt.guess(choices, possibilities, priors, k))
     green_guesses, green_scores = models.MaxGreen().guess(choices, possibilities, priors, k) 
     yellow_guesses, yellow_entropy = models.MaxInfo().guess(choices, possibilities, priors, k)
     print({
@@ -81,6 +78,14 @@ if __name__ == "__main__":
 # Example: answer is "where"
     # k = 2
     # suggested_guesses(k)
+    # reset()
+    # update_game_state("slate", 20) 
+    # update_game_state("south", 3)
+    # update_game_state("boost", 18)
+    # update_game_state("droid", 18)
+    # update_game_state("clock", 234)
+    # print(suggested_guesses(6))
+
     # update_game_state("slate", 162)  # pattern is 00002
     # suggested_guesses(k)
     # update_game_state("price", 165)  # pattern is 01002
