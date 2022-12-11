@@ -37,6 +37,7 @@ function App() {
   const [green_scores, setGreenScores] = useState(Array(NUM_GUESSES).fill(null));
   const [yellow_hints, setYellowHints] = useState(Array(NUM_GUESSES).fill(null));
   const [yellow_scores, setYellowScores] = useState(Array(NUM_GUESSES).fill(null));
+  const [remaining_sample_size, setRemainingSampleSize] = useState(null)
   const [curr_row, setRow] = useState(0);
   const [curr_tile, setTile] = useState(0);
   const [grid_state, setGridState] = useState(init_grid); // Letter at each tile
@@ -70,6 +71,7 @@ function App() {
       }
       setYellowHints(yellows)
       setYellowScores(yellowScores)
+      setRemainingSampleSize(data.remainingSampleSize)
     }
     getNextGuesses().then(() => {setIsFetchingHints(false)});
   }, [prevGuesses]); 
@@ -235,8 +237,11 @@ function App() {
     setMessage("");
     const new_word = chooseWord();
     setWordle(new_word);
+    setGreenScores(Array(NUM_GUESSES).fill(null));
     setGreenHints(Array(NUM_GUESSES).fill(null)); 
+    setYellowScores(Array(NUM_GUESSES).fill(null))
     setYellowHints(Array(NUM_GUESSES).fill(null)); 
+    setRemainingSampleSize(null)
     setGameOver(false);
     setPrevGuesses([])
   }
@@ -305,6 +310,9 @@ function App() {
               <div className="ai-container">
                   <img src={spinner} alt="loading" style={isFetchingHints ? {opacity: 1} : {opacity: 0}}></img>
                   <div className="hint-label">
+                    <h3>Remaining possible words: {remaining_sample_size}</h3>
+                  </div>
+                  <div className="hint-label">
                       <h3>Most Green Letters</h3>
                   </div>
                   <div className="hint-container" id="green-hints">
@@ -326,7 +334,7 @@ function App() {
                       ))}
                   </div>
                   <div className="hint-label">
-                      <h3>Most Yellow Letters</h3>
+                      <h3>Words Maximizing Entropy</h3>
                   </div>
                   <div className="hint-container" id="yellow-hints">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
