@@ -322,7 +322,8 @@ function App() {
               <div className="ai-container">
                   <img src={spinner} alt="loading" style={isFetchingHints ? {opacity: 1} : {opacity: 0}}></img>
                   <div className="hint-label">
-                    <h3>Remaining possible words: {remaining_sample_size}</h3>
+                    <h3 style={{marginBottom: 0}}>Remaining possible words: {remaining_sample_size}</h3>
+                    <p style={{color: colors.green, marginTop: 0}}>Green bordered suggestions are possible answers.</p>
                   </div>
                   <div className="hint-label">
                       <h3>Most Green Letters</h3>
