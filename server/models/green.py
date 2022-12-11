@@ -38,6 +38,25 @@ for each word in filtered:
 
 return [words] in top_words to client
 
+
+3. Filter WORDLE_DICTIONARY based on guesses
+  a. Filter dictionary to contain words with:
+        - known green letters (at correct position)
+        - contain known yellow letters
+  SCENARIOS at position 0:
+    a. Already know green letter at 0 
+        => filter dictionary with words that have that letter at position 0
+    b. Have a list of yellow letters at position 0
+        => filter dictionary that removes words with the yellow letters at position 0
+
+filterDictionary(filtered):
+    for (letter, index) in yellow_letters:
+      filtered = [word for word in filtered if (word.contains(letter) && word.charAt(index) != letter)]
+
+    for (letter, index) in green_letters:
+        filtered = [word for word in filtered if (word.contains(letter) && word.charAt(index) == letter)]
+        dictionary = createDictionary(filtered);
+
 """
 
 
@@ -60,10 +79,10 @@ def create_freq_map(possible_words):
     return map
 
 
-def get_greens(possible_words, k):
+def get_greens(possible_words, allowed_words, k):
     map = create_freq_map(possible_words)
     top_words = []
-    for word in possible_words:
+    for word in allowed_words:
         value = 0
         for i in range(0, 5):
             letter = ord(word[i]) - ord("a")
@@ -73,7 +92,7 @@ def get_greens(possible_words, k):
             if len(top_words) == k:
                 heap.heappop(top_words)
             heap.heappush(top_words, Node(word, value))
-    return [(w.word, w.val) for w in top_words]
+    return [w.word for w in top_words], [w.val for w in top_words]
 
 
 class Node(object):
