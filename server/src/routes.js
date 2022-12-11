@@ -42,7 +42,17 @@ module.exports = () => {
         stringData = stringData.replace(/'/g, '"') //replacing all ' with " to be recognized by json.parse
         var dictData = JSON.parse(stringData)
         console.log("dictData: ", dictData)
-        res.json({green: dictData['GREEN'], yellow: dictData['YELLOW'], greenScore: dictData["GREEN_SCORE"], yellowScore: dictData["YELLOW_ENTROPY"], remainingSampleSize: dictData["REMAINING_SAMPLE_SIZE"]});
+        res.json({
+          green: dictData['GREEN'], 
+          yellow: dictData['YELLOW'], 
+          greenScores: dictData["GREEN_SCORES"], 
+          yellowEntropies: dictData["YELLOW_ENTROPIES"], 
+          // greenEntropies: dictData["GREEN_ENTROPIES"],
+          // yellowScores: dictData["YELLOW_SCORES"],
+          greenEntropies: [],
+          yellowScores: [],
+          remainingSampleSize: dictData["REMAINING_SAMPLE_SIZE"]
+        });
       });
   
       python.stderr.on('data', (data) => {

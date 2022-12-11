@@ -36,7 +36,9 @@ function App() {
   const [green_hints, setGreenHints] = useState(Array(NUM_GUESSES).fill(null));
   const [green_scores, setGreenScores] = useState(Array(NUM_GUESSES).fill(null));
   const [yellow_hints, setYellowHints] = useState(Array(NUM_GUESSES).fill(null));
+  const [yellow_entropies, setYellowEntropies] = useState(Array(NUM_GUESSES).fill(null));
   const [yellow_scores, setYellowScores] = useState(Array(NUM_GUESSES).fill(null));
+  const [green_entropies, setGreenEntropies] = useState(Array(NUM_GUESSES).fill(null));
   const [remaining_sample_size, setRemainingSampleSize] = useState(null)
   const [curr_row, setRow] = useState(0);
   const [curr_tile, setTile] = useState(0);
@@ -56,7 +58,7 @@ function App() {
       const response = await fetch(url);
       const data = await response.json();
       var greens = [...data.green]
-      var greenScores = [...data.greenScore]
+      var greenScores = [...data.greenScores]
       for (let i = data.green.length; i <= NUM_GUESSES; i++) {
         greens.push(null)
         greenScores.push(null)
@@ -64,13 +66,15 @@ function App() {
       setGreenHints(greens)
       setGreenScores(greenScores)
       var yellows = [...data.yellow]
-      var yellowScores = [...data.yellowScore]
+      var yellowScores = [...data.yellowEntropies]
       for (let i = data.yellow.length; i <= NUM_GUESSES; i++) {
         yellows.push(null)
         yellowScores.push(null)
       }
       setYellowHints(yellows)
-      setYellowScores(yellowScores)
+      setYellowEntropies(yellowScores)
+      setGreenEntropies(data.greenEntropies)
+      setYellowScores(data.yellowScores)
       setRemainingSampleSize(data.remainingSampleSize)
     }
     getNextGuesses().then(() => {setIsFetchingHints(false)});
@@ -239,8 +243,10 @@ function App() {
     setWordle(new_word);
     setGreenScores(Array(NUM_GUESSES).fill(null));
     setGreenHints(Array(NUM_GUESSES).fill(null)); 
-    setYellowScores(Array(NUM_GUESSES).fill(null))
+    setYellowEntropies(Array(NUM_GUESSES).fill(null))
     setYellowHints(Array(NUM_GUESSES).fill(null)); 
+    setGreenEntropies(Array(NUM_GUESSES).fill(null))
+    setYellowScores(Array(NUM_GUESSES).fill(null));
     setRemainingSampleSize(null)
     setGameOver(false);
     setPrevGuesses([])
@@ -318,18 +324,24 @@ function App() {
                   <div className="hint-container" id="green-hints">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
                           green_hints[i] == null ?
-                          <div className="hint" key={i}>
-                          {[0, 1, 2, 3, 4].map((j) => (
-                            <div className="hint-tile" key={j} word="HELLO" style={{backgroundColor: colors.green}}>{" "}</div>
-                          ))}
-                          <div className="score">Scores: {green_scores[i]}</div>
+                          <div className="word-container">
+                            <div className="hint" key={i}>
+                              {[0, 1, 2, 3, 4].map((j) => (
+                                <div className="hint-tile" key={j} word="HELLO" style={{backgroundColor: colors.green}}>{" "}</div>
+                              ))}
+                            </div>
+                            <div className="score">Entropy: {green_entropies[i]}</div>
+                            <div className="score">Green score: {green_scores[i]}</div>
                           </div>
                           :
-                          <div className="hint" key={i} onClick={() => onClickHint(green_hints[i])}>
-                          {[0, 1, 2, 3, 4].map((j) => (
-                            <div className="hint-tile" key={j} word="HELLO" style={{backgroundColor: colors.green}}>{green_hints[i].charAt(j)}</div>
-                          ))}
-                          <div className="score">Scores: {green_scores[i]}</div>
+                          <div className="word-container">
+                            <div className="hint" key={i} onClick={() => onClickHint(green_hints[i])}>
+                              {[0, 1, 2, 3, 4].map((j) => (
+                                <div className="hint-tile" key={j} word="HELLO" style={{backgroundColor: colors.green}}>{green_hints[i].charAt(j)}</div>
+                              ))}
+                            </div>
+                            <div className="score">Entropy: {green_entropies[i]}</div>
+                            <div className="score">Green score: {green_scores[i]}</div>
                           </div>
                       ))}
                   </div>
@@ -339,18 +351,24 @@ function App() {
                   <div className="hint-container" id="yellow-hints">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
                           yellow_hints[i] == null?
-                          <div className="hint" key={i}>
-                          {[0, 1, 2, 3, 4].map((j) => (
-                              <div className="hint-tile" key={j} style={{backgroundColor: colors.yellow}}>{" "}</div>
-                          ))}
-                          <div className="score">Entropy: {yellow_scores[i]}</div>
+                          <div className="word-container">
+                            <div className="hint" key={i}>
+                              {[0, 1, 2, 3, 4].map((j) => (
+                                  <div className="hint-tile" key={j} style={{backgroundColor: colors.yellow}}>{" "}</div>
+                              ))}
+                            </div>
+                            <div className="score">Entropy: {yellow_entropies[i]}</div>
+                            <div className="score">Green score: {yellow_scores[i]}</div>
                           </div>
                           :
-                          <div className="hint" key={i} onClick={() => onClickHint(yellow_hints[i])}>
-                          {[0, 1, 2, 3, 4].map((j) => (
-                              <div className="hint-tile" key={j} style={{backgroundColor: colors.yellow}}>{yellow_hints[i].charAt(j)}</div>
-                          ))}
-                          <div className="score">Entropy: {yellow_scores[i]}</div>
+                          <div className="word-container">
+                            <div className="hint" key={i} onClick={() => onClickHint(yellow_hints[i])}>
+                              {[0, 1, 2, 3, 4].map((j) => (
+                                  <div className="hint-tile" key={j} style={{backgroundColor: colors.yellow}}>{yellow_hints[i].charAt(j)}</div>
+                              ))}
+                            </div>
+                            <div className="score">Entropy: {yellow_entropies[i]}</div>
+                            <div className="score">Green score: {yellow_scores[i]}</div>
                           </div>
                       ))}
                   </div>
