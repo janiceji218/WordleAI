@@ -91,6 +91,9 @@ class MaxGreen(Optimizer):
         super().__init__("Maximizing Green Letters")
 
     def guess(self, allowed_words, possible_words, priors, k):
+        if len(possible_words) == 1:
+            _, score = green.get_greens(possible_words, possible_words, 1)
+            return possible_words, score
         res, score = green.get_greens(possible_words, allowed_words, k)
         idx_sorted = np.argsort(np.array(score) * -1)
         return [res[i] for i in idx_sorted], [score[i] for i in idx_sorted]
