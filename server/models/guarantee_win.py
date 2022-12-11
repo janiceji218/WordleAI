@@ -37,5 +37,5 @@ def guaranteed_win(choice, possibilities, remain_guess):
 if __name__ == "__main__":
     _, _, possibilities = util.get_guesses_patterns_possibilities()
     guess = sys.argv[1].lower()
-    remain_guess = sys.argv[2]
+    remain_guess = int(sys.argv[2])
     print(guaranteed_win(guess, possibilities, remain_guess))
