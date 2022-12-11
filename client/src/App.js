@@ -39,6 +39,8 @@ function App() {
   const [yellow_entropies, setYellowEntropies] = useState(Array(NUM_GUESSES).fill(null));
   const [yellow_scores, setYellowScores] = useState(Array(NUM_GUESSES).fill(null));
   const [green_entropies, setGreenEntropies] = useState(Array(NUM_GUESSES).fill(null));
+  const [yellow_is_possible, setYellowIsPossible] = useState(Array(NUM_GUESSES).fill(true))
+  const [green_is_possible, setGreenIsPossible] = useState(Array(NUM_GUESSES).fill(true))
   const [remaining_sample_size, setRemainingSampleSize] = useState(null)
   const [curr_row, setRow] = useState(0);
   const [curr_tile, setTile] = useState(0);
@@ -47,7 +49,7 @@ function App() {
   const [grid_colors, setGridColors] = useState(init_grid); // Color at each tile
   const [message, setMessage] = useState("");
   const [gameOver, setGameOver] = useState(false);
-  const [isFetchingHints, setIsFetchingHints] = useState(false);
+  const [isFetchingHints, setIsFetchingHints] = useState(true);
   const [isCheckingGuess, setIsCheckingGuess] = useState(false);
 
   useEffect(() => {
@@ -75,6 +77,8 @@ function App() {
       setYellowEntropies(yellowScores)
       setGreenEntropies(data.greenEntropies)
       setYellowScores(data.yellowScores)
+      setGreenIsPossible(data.greenIsPossible)
+      setYellowIsPossible(data.yellowIsPossible)
       setRemainingSampleSize(data.remainingSampleSize)
     }
     getNextGuesses().then(() => {setIsFetchingHints(false)});
@@ -247,6 +251,8 @@ function App() {
     setYellowHints(Array(NUM_GUESSES).fill(null)); 
     setGreenEntropies(Array(NUM_GUESSES).fill(null))
     setYellowScores(Array(NUM_GUESSES).fill(null));
+    setGreenIsPossible(Array(NUM_GUESSES).fill(true));
+    setYellowIsPossible(Array(NUM_GUESSES).fill(true))
     setRemainingSampleSize(null)
     setGameOver(false);
     setPrevGuesses([])
@@ -324,7 +330,7 @@ function App() {
                   <div className="hint-container" id="green-hints">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
                           green_hints[i] == null ?
-                          <div className="word-container">
+                          <div className={green_is_possible ? "possible-word-container" : "word-container"}>
                             <div className="hint" key={i}>
                               {[0, 1, 2, 3, 4].map((j) => (
                                 <div className="hint-tile" key={j} word="HELLO" style={{backgroundColor: colors.green}}>{" "}</div>
@@ -334,7 +340,7 @@ function App() {
                             <div className="score">Green score: {green_scores[i]}</div>
                           </div>
                           :
-                          <div className="word-container">
+                          <div className={green_is_possible ? "possible-word-container" : "word-container"}>
                             <div className="hint" key={i} onClick={() => onClickHint(green_hints[i])}>
                               {[0, 1, 2, 3, 4].map((j) => (
                                 <div className="hint-tile" key={j} word="HELLO" style={{backgroundColor: colors.green}}>{green_hints[i].charAt(j)}</div>
@@ -351,7 +357,7 @@ function App() {
                   <div className="hint-container" id="yellow-hints">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
                           yellow_hints[i] == null?
-                          <div className="word-container">
+                          <div className={yellow_is_possible ? "possible-word-container" : "word-container"}>
                             <div className="hint" key={i}>
                               {[0, 1, 2, 3, 4].map((j) => (
                                   <div className="hint-tile" key={j} style={{backgroundColor: colors.yellow}}>{" "}</div>
@@ -361,7 +367,7 @@ function App() {
                             <div className="score">Green score: {yellow_scores[i]}</div>
                           </div>
                           :
-                          <div className="word-container">
+                          <div className={yellow_is_possible ? "possible-word-container" : "word-container"}>
                             <div className="hint" key={i} onClick={() => onClickHint(yellow_hints[i])}>
                               {[0, 1, 2, 3, 4].map((j) => (
                                   <div className="hint-tile" key={j} style={{backgroundColor: colors.yellow}}>{yellow_hints[i].charAt(j)}</div>
