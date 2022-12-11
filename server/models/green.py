@@ -79,10 +79,10 @@ def create_freq_map(possible_words):
     return map
 
 
-def get_greens(possible_words, k):
+def get_greens(possible_words, allowed_words, k):
     map = create_freq_map(possible_words)
     top_words = []
-    for word in possible_words:
+    for word in allowed_words:
         value = 0
         for i in range(0, 5):
             letter = ord(word[i]) - ord("a")

@@ -40,10 +40,16 @@ class Optimizer:
         self.name = name
 
     @abstractclassmethod
-    def guess(allowed_words, possible_words, priors, k):
+    def guess(self, allowed_words, possible_words, priors, k):
         """
         allowed_words: words in wordle's dictionary 
         possible_words: words that can possibly be the answer given current information
+        """
+        pass
+
+    def score(self, choices, possible_words):
+        """
+        Given words, return score according to the metric the optimizer uses
         """
         pass
 
@@ -54,17 +60,25 @@ class MaxInfo(Optimizer):
 
     def __init__(self):
         super().__init__("Maximizing Information")
+        self.weights = None
 
     def guess(self, allowed_words, possible_words, priors, k):
-        weights = util.get_weights(possible_words, priors)
-        ents = entropy.get_entropies(allowed_words, possible_words, weights)
-        if len(possible_words) <= k:
-            return possible_words, [] # TODO: CHECK IF WE CAN RETURN ENTROPY HERE (DOES IT MAKE SENSE TO RETURN ENTROPY)
-        k_left = k if len(possible_words) > k else len(possible_words)
-        idx = np.argpartition(ents, -k_left)[-k_left:]
-        return [allowed_words[i] for i in idx], [round(ents[i], 3) for i in idx]
+        self.weights = util.get_weights(possible_words, priors)
+        ents = entropy.get_entropies(allowed_words, possible_words, self.weights)
+        if len(possible_words) == 1:
+            return possible_words, entropy.get_entropies(possible_words, possible_words, self.weights)
+        # k_left = k if len(possible_words) > k else len(possible_words)
+        idx = np.argpartition(ents, -k)[-k:]
+        res, score = [allowed_words[i] for i in idx], [ents[i] for i in idx]
+        idx_sorted = np.argsort(np.array(score) * -1)
+        # res.sort(key=score, reverse=True)
+        # score.sort(reverse=True)
+        return [res[i] for i in idx_sorted], [score[i] for i in idx_sorted]
+    
+    def score(self, choices, possible_words):
+        return entropy.get_entropies(choices, possible_words, self.weights)
 
-# TODO: Calculate different metrics: entropy
+
 # max_info = MaxInfo()
 # gs = max_info.guess(["guess", "where"], ["guess", "whole", "where"], util.get_true_wordle_prior(), 1)
 # print(gs)
@@ -78,4 +92,10 @@ class MaxGreen(Optimizer):
         super().__init__("Maximizing Green Letters")
 
     def guess(self, allowed_words, possible_words, priors, k):
-        return green.get_greens(possible_words, k)
+        res, score = green.get_greens(possible_words, allowed_words, k)
+        idx_sorted = np.argsort(np.array(score) * -1)
+        return [res[i] for i in idx_sorted], [score[i] for i in idx_sorted]
+    
+    def score(self, choices, possible_words):
+        _, scores = green.get_greens(possible_words, choices, len(choices))
+        return scores
