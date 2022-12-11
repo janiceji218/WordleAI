@@ -27,7 +27,8 @@ def suggested_guesses(k):
         "green": green_guesses,
         "green_score": green_scores,
         "yellow": yellow_guesses,
-        "yellow_entropy": yellow_entropy
+        "yellow_entropy": yellow_entropy,
+        "remaining_sample_size": len(possibilities)
     })
 
 
