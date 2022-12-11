@@ -47,10 +47,8 @@ module.exports = () => {
           yellow: dictData['YELLOW'], 
           greenScores: dictData["GREEN_SCORES"], 
           yellowEntropies: dictData["YELLOW_ENTROPIES"], 
-          // greenEntropies: dictData["GREEN_ENTROPIES"],
-          // yellowScores: dictData["YELLOW_SCORES"],
-          greenEntropies: [],
-          yellowScores: [],
+          greenEntropies: dictData["GREEN_ENTROPIES"],
+          yellowScores: dictData["YELLOW_SCORES"],
           remainingSampleSize: dictData["REMAINING_SAMPLE_SIZE"]
         });
       });

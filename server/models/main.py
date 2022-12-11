@@ -27,11 +27,11 @@ def suggested_guesses(k):
     yellow_guesses, yellow_entropy = opt_ent.guess(choices, possibilities, priors, k)
     print({
         "green": green_guesses,
-        "green_entropy": opt_ent.score(green_guesses, possibilities),
-        "green_score": green_scores,
+        "green_entropies": opt_ent.score(green_guesses, possibilities),
+        "green_scores": green_scores,
         "yellow": yellow_guesses,
-        "yellow_entropy": yellow_entropy,
-        "yellow_score": opt_green.score(yellow_guesses, possibilities),
+        "yellow_entropies": yellow_entropy,
+        "yellow_scores": opt_green.score(yellow_guesses, possibilities),
         "remaining_sample_size": len(possibilities)
     })
 

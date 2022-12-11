@@ -66,18 +66,17 @@ class MaxInfo(Optimizer):
         self.weights = util.get_weights(possible_words, priors)
         ents = entropy.get_entropies(allowed_words, possible_words, self.weights)
         if len(possible_words) == 1:
-            return possible_words, entropy.get_entropies(possible_words, possible_words, self.weights)
+            return possible_words, [round(ent, 3) for ent in entropy.get_entropies(possible_words, possible_words, self.weights)]
         # k_left = k if len(possible_words) > k else len(possible_words)
         idx = np.argpartition(ents, -k)[-k:]
         res, score = [allowed_words[i] for i in idx], [ents[i] for i in idx]
         idx_sorted = np.argsort(np.array(score) * -1)
         # res.sort(key=score, reverse=True)
         # score.sort(reverse=True)
-        return [res[i] for i in idx_sorted], [score[i] for i in idx_sorted]
+        return [res[i] for i in idx_sorted], [round(score[i], 3) for i in idx_sorted]
     
     def score(self, choices, possible_words):
-        return entropy.get_entropies(choices, possible_words, self.weights)
-
+        return [round(s, 3) for s in entropy.get_entropies(choices, possible_words, self.weights)]
 
 # max_info = MaxInfo()
 # gs = max_info.guess(["guess", "where"], ["guess", "whole", "where"], util.get_true_wordle_prior(), 1)
