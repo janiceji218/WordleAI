@@ -49,8 +49,8 @@ module.exports = () => {
           yellowEntropies: dictData["YELLOW_ENTROPIES"], 
           greenEntropies: dictData["GREEN_ENTROPIES"],
           yellowScores: dictData["YELLOW_SCORES"],
-          yellowIsPossible: dictData["YELLOW_IS_POSSIBLE"],
-          greenIsPossible: dictData["GREEN_IS_POSSIBLE"],
+          yellowIsPossible: dictData["YELLOW_IS_POSSIBLE"].map((y) => y === 1),
+          greenIsPossible: dictData["GREEN_IS_POSSIBLE"].map((g) => g === 1),
           remainingSampleSize: dictData["REMAINING_SAMPLE_SIZE"]
         });
       });

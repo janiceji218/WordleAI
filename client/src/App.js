@@ -330,7 +330,7 @@ function App() {
                   <div className="hint-container" id="green-hints">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
                           green_hints[i] == null ?
-                          <div className={green_is_possible ? "possible-word-container" : "word-container"}>
+                          <div className={green_is_possible[i] ? "possible-word-container" : "word-container"}>
                             <div className="hint" key={i}>
                               {[0, 1, 2, 3, 4].map((j) => (
                                 <div className="hint-tile" key={j} word="HELLO" style={{backgroundColor: colors.green}}>{" "}</div>
@@ -340,7 +340,7 @@ function App() {
                             <div className="score">Green score: {green_scores[i]}</div>
                           </div>
                           :
-                          <div className={green_is_possible ? "possible-word-container" : "word-container"}>
+                          <div className={green_is_possible[i] ? "possible-word-container" : "word-container"}>
                             <div className="hint" key={i} onClick={() => onClickHint(green_hints[i])}>
                               {[0, 1, 2, 3, 4].map((j) => (
                                 <div className="hint-tile" key={j} word="HELLO" style={{backgroundColor: colors.green}}>{green_hints[i].charAt(j)}</div>
@@ -357,7 +357,7 @@ function App() {
                   <div className="hint-container" id="yellow-hints">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
                           yellow_hints[i] == null?
-                          <div className={yellow_is_possible ? "possible-word-container" : "word-container"}>
+                          <div className={yellow_is_possible[i] ? "possible-word-container" : "word-container"}>
                             <div className="hint" key={i}>
                               {[0, 1, 2, 3, 4].map((j) => (
                                   <div className="hint-tile" key={j} style={{backgroundColor: colors.yellow}}>{" "}</div>
@@ -367,7 +367,7 @@ function App() {
                             <div className="score">Green score: {yellow_scores[i]}</div>
                           </div>
                           :
-                          <div className={yellow_is_possible ? "possible-word-container" : "word-container"}>
+                          <div className={yellow_is_possible[i] ? "possible-word-container" : "word-container"}>
                             <div className="hint" key={i} onClick={() => onClickHint(yellow_hints[i])}>
                               {[0, 1, 2, 3, 4].map((j) => (
                                   <div className="hint-tile" key={j} style={{backgroundColor: colors.yellow}}>{yellow_hints[i].charAt(j)}</div>

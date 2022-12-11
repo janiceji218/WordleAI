@@ -165,7 +165,7 @@ body {
 }
 
 .possible-word-container {
-  border: 3px solid;
+  border: 1px solid;
   border-color: rgb(101, 131, 84);
   margin-bottom: 5%;
 }
