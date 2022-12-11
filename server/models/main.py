@@ -71,43 +71,43 @@ pattern (grey -> 0, yellow -> 1, green -> 2) but as an integer
 between 0 and 3^5. Reading this integer in ternary gives the
 associated pattern. Ie convert to base 3
 """
-# if __name__ == "__main__":
-#     answer = sys.argv[1].lower()
-#     guesses = sys.argv[2].lower()
-#     if guesses == 'none':  # parsed as none for the first guess to ensure there's still detectable content
-#         guesses = []
-#     else:
-#         guesses = guesses.split(",")
-#     update(answer, guesses)
+if __name__ == "__main__":
+    answer = sys.argv[1].lower()
+    guesses = sys.argv[2].lower()
+    if guesses == 'none':  # parsed as none for the first guess to ensure there's still detectable content
+        guesses = []
+    else:
+        guesses = guesses.split(",")
+    update(answer, guesses)
 
 # Example: answer is "where"
-k = 2
-suggested_guesses(k)
-reset()
-update_game_state("slate", 20) 
-update_game_state("south", 3)
-update_game_state("boost", 18)
-update_game_state("droid", 18)
-update_game_state("clock", 234)
-print(suggested_guesses(6))
+# k = 2
+# suggested_guesses(k)
+# reset()
+# update_game_state("slate", 20) 
+# update_game_state("south", 3)
+# update_game_state("boost", 18)
+# update_game_state("droid", 18)
+# update_game_state("clock", 234)
+# print(suggested_guesses(6))
 
-update_game_state("slate", 162)  # pattern is 00002
-suggested_guesses(k)
-update_game_state("price", 165)  # pattern is 01002
-suggested_guesses(k)
-update_game_state("gorge", 171)  # pattern is 00102
-suggested_guesses(k)
-update_game_state("rhyme", 169)  # pattern is 12002
-suggested_guesses(k)
-reset()
-suggested_guesses(6)
-update_game_state("trace", 1) # pattern is 00001
-suggested_guesses(6)
-update_game_state("linos", 39) # pattern is 01110
-suggested_guesses(6)
-update_game_state("pudge", 2) # pattern is 00002
-suggested_guesses(6)
-update("point", [])
-update("point", ["trace"])
-update("point", ["trace", "linos"])
-update("point", ["trace", "linos", "pudge"])
+# update_game_state("slate", 162)  # pattern is 00002
+# suggested_guesses(k)
+# update_game_state("price", 165)  # pattern is 01002
+# suggested_guesses(k)
+# update_game_state("gorge", 171)  # pattern is 00102
+# suggested_guesses(k)
+# update_game_state("rhyme", 169)  # pattern is 12002
+# suggested_guesses(k)
+# reset()
+# suggested_guesses(6)
+# update_game_state("trace", 1) # pattern is 00001
+# suggested_guesses(6)
+# update_game_state("linos", 39) # pattern is 01110
+# suggested_guesses(6)
+# update_game_state("pudge", 2) # pattern is 00002
+# suggested_guesses(6)
+# update("point", [])
+# update("point", ["trace"])
+# update("point", ["trace", "linos"])
+# update("point", ["trace", "linos", "pudge"])
