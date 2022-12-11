@@ -25,13 +25,16 @@ def suggested_guesses(k):
     opt_green, opt_ent = models.MaxGreen(), models.MaxInfo()
     green_guesses, green_scores = opt_green.guess(choices, possibilities, priors, k) 
     yellow_guesses, yellow_entropy = opt_ent.guess(choices, possibilities, priors, k)
+    possible_set = set(possibilities)
     print({
         "green": green_guesses,
         "green_entropies": opt_ent.score(green_guesses, possibilities),
         "green_scores": green_scores,
+        "green_possible": [g in possible_set for g in green_guesses],
         "yellow": yellow_guesses,
         "yellow_entropies": yellow_entropy,
         "yellow_scores": opt_green.score(yellow_guesses, possibilities),
+        "yellow_possible": [g in possible_set for g in yellow_guesses],
         "remaining_sample_size": len(possibilities)
     })
 
