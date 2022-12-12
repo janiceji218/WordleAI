@@ -5,60 +5,74 @@ save in csv word and the number of attempts taken
 
 import util
 import models
-
-
-def update_game_state(guess, pattern):
-    """" Receive user's guess and resulting pattern and update game state"""
-    guesses, patterns, _ = util.get_guesses_patterns_possibilities()
-    guesses.append(guess)
-    patterns.append(pattern)
-    util.update_guesses_patterns(guesses, patterns)
-
-
-def update(answer, guesses):
-    if guesses:
-        update_game_state(guesses[-1], util.get_pattern(guesses[-1], answer))
-        suggested_guesses(6)
-    else: # first guess
-        reset()
-        suggested_guesses(6)
-
+import os
+import Config
+import csv
 
 def reset():
-    """ When the game is done, erase files storing game state"""
     if os.path.exists(Config.PATTERN_GRID_DATA):
         os.remove(Config.PATTERN_GRID_DATA)
-    if os.path.exists(Config.GUESSES_FILE):
-        os.remove(Config.GUESSES_FILE)
-    if os.path.exists(Config.PATTERNS_FILE):
-        os.remove(Config.PATTERNS_FILE)
-    if os.path.exists(Config.POSSIBILITIES_FILE):
-        os.remove(Config.POSSIBILITIES_FILE)
 
-def play(answer, opt):
+def generate_pattern(guess, answer):
+    """ Return a number between 0 and 242"""
+    pattern = 0
+    letter_list = list(answer)
+    unchecked = list(range(5))
+    # Check for green
+    for i in range(5):
+        if guess[i] == answer[i]:
+            pattern += (3**i) * 2
+            letter_list.remove(guess[i])
+            unchecked.remove(i)
+    # Then for yellow
+    for i in unchecked:
+        if guess[i] in letter_list:
+            pattern += 3**i
+            letter_list.remove(guess[i])
+    return pattern
+
+def play(answer, opt, priors, all_words, possible_words):
     """
     Given answer and optimizer, return number of guesses <= 6
     """
-    priors = util.get_true_wordle_prior()
-    all_words = util.get_word_list(short=False)
+    reset()
     choices = all_words
-    guess = None
-    num_guesses = 0
-    while num_guesses < 6 and guess != answer:
+    possibilities = possible_words
+    guess = opt.guess(choices, possibilities, priors, 1)[0][0]
+    num_guesses = 1
+    while guess != answer:
+        # print(guess)
+        # generate pattern
+        pattern = generate_pattern(guess, answer)
+        # print(pattern)
+        # update list of possibilities
+        possibilities = util.get_possible_words(guess, pattern, possibilities)
+        # print("possibilities", possibilities)
         num_guesses += 1
-        prev_guesses, patterns, possibilities = util.get_guesses_patterns_possibilities()
-        guess = opt.guess(choices, possibilities, priors, 1)
+        # get new guess
+        guess = opt.guess(choices, possibilities, priors, 1)[0][0]
+    # print("Num", num_guesses)
+    reset()
+    return num_guesses
 
 
 def run_against_all_possible(opt):
-    
-
-    
-     # TODO: always true?
-    if prev_guesses != []: # If not beginning of the game
-        possibilities = util.get_possible_words(prev_guesses[-1], patterns[-1], possibilities)
-        util.update_possibilities(possibilities)
-    
+    priors = util.get_true_wordle_prior()
+    all_words = util.get_word_list(short=False)
+    possible_words = util.get_word_list(short=True)
+    res = []
+    for i, answer in enumerate(possible_words):
+        print(i, "====", answer, "====")
+        res.append({"answer": answer, "guesses": play(answer, opt, priors, all_words, possible_words)})
+    return res    
 
 if __name__ == "__main__":
-    otps = [models.MaxGreen()]
+    opts = [models.MaxGreen()]
+    for opt in opts:
+        res = run_against_all_possible(opt)
+        with open(f"result/{opt.name}.csv", "w") as f:
+            fieldnames = ["answer", "guesses"]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(res)
+    
