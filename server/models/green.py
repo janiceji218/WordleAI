@@ -1,3 +1,5 @@
+import heapq as heap
+
 """
 PSEUDOCODE
 
@@ -56,3 +58,50 @@ filterDictionary(filtered):
         dictionary = createDictionary(filtered);
 
 """
+
+
+def create_freq_map(possible_words):
+    """
+    len(map) = 5 (for the length of a wordle)
+    len(map[0]) = 26 (for each letter in the alphabet)
+    map[0][0] = the frequency the letter 'A' appears as the first letter in all possible words
+    """
+    map = []
+    for i in range(0, 5):
+        occurence = []
+        for letter in range(0, 26):
+            count = 0
+            for word in possible_words:
+                if ord(word[i]) - ord("a") == letter:
+                    count += 1
+            occurence.append(count)
+        map.append(occurence)
+    return map
+
+
+def get_greens(possible_words, allowed_words, k):
+    map = create_freq_map(possible_words)
+    top_words = []
+    for word in allowed_words:
+        value = 0.1 if word in possible_words else 0 # make sure that a possible word is included in top words whe there are ties
+        for i in range(0, 5):
+            letter = ord(word[i]) - ord("a")
+            value += map[i][letter]
+        
+        if len(top_words) < k or value > top_words[0].val:
+            if len(top_words) == k:
+                heap.heappop(top_words)
+            heap.heappush(top_words, Node(word, value))
+    return [w.word for w in top_words], [(w.val - 0.1 if w.word in possible_words else w.val) for w in top_words]
+    
+
+class Node(object):
+    def __init__(self, word: str, val: int):
+        self.word = word
+        self.val = val
+
+    # def __repr__(self):
+    #     return f'Node value: {self.val}'
+
+    def __lt__(self, other):
+        return self.val < other.val

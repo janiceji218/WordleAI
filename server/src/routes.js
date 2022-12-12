@@ -41,8 +41,18 @@ module.exports = () => {
         stringData = stringData.toUpperCase()
         stringData = stringData.replace(/'/g, '"') //replacing all ' with " to be recognized by json.parse
         var dictData = JSON.parse(stringData)
-        console.log("dictData: ", dictData)
-        res.json({green: dictData['GREEN'], yellow: dictData['GREEN']});
+        console.log("suggestions: ", dictData)
+        res.json({
+          green: dictData['GREEN'], 
+          yellow: dictData['YELLOW'], 
+          greenScores: dictData["GREEN_SCORES"], 
+          yellowEntropies: dictData["YELLOW_ENTROPIES"], 
+          greenEntropies: dictData["GREEN_ENTROPIES"],
+          yellowScores: dictData["YELLOW_SCORES"],
+          yellowIsPossible: dictData["YELLOW_IS_POSSIBLE"].map((y) => y === 1),
+          greenIsPossible: dictData["GREEN_IS_POSSIBLE"].map((g) => g === 1),
+          remainingSampleSize: dictData["REMAINING_SAMPLE_SIZE"]
+        });
       });
   
       python.stderr.on('data', (data) => {
@@ -51,7 +61,34 @@ module.exports = () => {
   
       // in close event we are sure that stream from child process is closed
       python.on('close', async (code) => {
-        console.log(`childt process close all stdio with code ${code}`);
+        console.log(`child process for getNextGuesses close all stdio with code ${code}`);
+      })
+    });
+
+    router.get('/guaranteeWin/:guess/:remainGuess', async (req, res) => {
+      const guess = req.params.guess
+      const remainGuess = req.params.remainGuess
+      const { spawn } = require('child_process')
+      const python = spawn('py', ['models/guarantee_win.py', guess, remainGuess])
+  
+      python.stdout.on('data', (data) => {
+        console.log('Pipe data from python script ...');
+        var stringData = data.toString() // data was a buffer
+        stringData = stringData.toLowerCase().trim() //string data has trailing whitespaces
+        if (stringData === "true") {
+          res.json({guaranteeWin: true});
+        } else {
+          res.json({guaranteeWin: false});
+        }
+      });
+  
+      python.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+      });
+  
+      // in close event we are sure that stream from child process is closed
+      python.on('close', async (code) => {
+        console.log(`child process for guaranteeWin close all stdio with code ${code}`);
       })
     });
   
