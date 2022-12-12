@@ -83,7 +83,7 @@ def get_greens(possible_words, allowed_words, k):
     map = create_freq_map(possible_words)
     top_words = []
     for word in allowed_words:
-        value = 0
+        value = 0.1 if word in possible_words else 0 # make sure that a possible word is included in top words whe there are ties
         for i in range(0, 5):
             letter = ord(word[i]) - ord("a")
             value += map[i][letter]
@@ -92,8 +92,8 @@ def get_greens(possible_words, allowed_words, k):
             if len(top_words) == k:
                 heap.heappop(top_words)
             heap.heappush(top_words, Node(word, value))
-    return [w.word for w in top_words], [w.val for w in top_words]
-
+    return [w.word for w in top_words], [(w.val - 0.1 if w.word in possible_words else w.val) for w in top_words]
+    
 
 class Node(object):
     def __init__(self, word: str, val: int):

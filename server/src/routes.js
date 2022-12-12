@@ -41,7 +41,7 @@ module.exports = () => {
         stringData = stringData.toUpperCase()
         stringData = stringData.replace(/'/g, '"') //replacing all ' with " to be recognized by json.parse
         var dictData = JSON.parse(stringData)
-        console.log("dictData: ", dictData)
+        console.log("suggestions: ", dictData)
         res.json({
           green: dictData['GREEN'], 
           yellow: dictData['YELLOW'], 
