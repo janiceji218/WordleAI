@@ -22,7 +22,7 @@ const init_grid = [
 const NUM_GUESSES = 6
 
 const chooseWord = () => {
-  let word = wordle_dictionary[Math.floor(Math.random() * wordle_dictionary.length)];
+  var word = wordle_dictionary[Math.floor(Math.random() * wordle_dictionary.length)];
   console.log("The wordle is: " + word);
   return word.toUpperCase();
 }
