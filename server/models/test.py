@@ -41,7 +41,7 @@ def play(answer, opt, priors, all_words, possible_words):
     guess = opt.guess(choices, possibilities, priors, 1)[0][0]
     num_guesses = 1
     while guess != answer:
-        # print(guess)
+        print(guess)
         # generate pattern
         pattern = generate_pattern(guess, answer)
         # print(pattern)
@@ -51,28 +51,31 @@ def play(answer, opt, priors, all_words, possible_words):
         num_guesses += 1
         # get new guess
         guess = opt.guess(choices, possibilities, priors, 1)[0][0]
-    # print("Num", num_guesses)
+    print("Num", num_guesses)
     reset()
     return num_guesses
 
 
-def run_against_all_possible(opt):
+def run_against_all_possible(opt, run_against=None):
     priors = util.get_true_wordle_prior()
     all_words = util.get_word_list(short=False)
     possible_words = util.get_word_list(short=True)
     res = []
-    for i, answer in enumerate(possible_words):
+    if not run_against:
+        run_against = possible_words
+    for i, answer in enumerate(run_against):
         print(i, "====", answer, "====")
         res.append({"answer": answer, "guesses": play(answer, opt, priors, all_words, possible_words)})
     return res    
 
 if __name__ == "__main__":
-    opts = [models.MaxGreen()]
+    words = ["wafer", "waver", "goner", "mammy", "vaunt", "watch", "wight"]
+    opts = [models.MaxInfo()]
     for opt in opts:
-        res = run_against_all_possible(opt)
-        with open(f"result/{opt.name}.csv", "w") as f:
-            fieldnames = ["answer", "guesses"]
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(res)
+        res = run_against_all_possible(opt, run_against=words)
+        # with open(f"result/{opt.name}.csv", "w") as f:
+        #     fieldnames = ["answer", "guesses"]
+        #     writer = csv.DictWriter(f, fieldnames=fieldnames)
+        #     writer.writeheader()
+        #     writer.writerows(res)
     
