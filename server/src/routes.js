@@ -33,7 +33,7 @@ module.exports = () => {
       const answer = req.params.answer
       console.log("getNextGuesses route called with guesses: ", guesses, " and answer: ", answer)
       const { spawn } = require('child_process')
-      const python = spawn('py', ['models/main.py', answer, guesses])
+      const python = spawn('python', ['models/main.py', answer, guesses])
   
       python.stdout.on('data', (data) => {
         console.log('Pipe data from python script ...');
@@ -69,7 +69,7 @@ module.exports = () => {
       const guess = req.params.guess
       const remainGuess = req.params.remainGuess
       const { spawn } = require('child_process')
-      const python = spawn('py', ['models/guarantee_win.py', guess, remainGuess])
+      const python = spawn('python', ['models/guarantee_win.py', guess, remainGuess])
   
       python.stdout.on('data', (data) => {
         console.log('Pipe data from python script ...');

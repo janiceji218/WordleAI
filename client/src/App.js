@@ -121,6 +121,9 @@ function App() {
   }
 
   const handleBackspace = () => {
+    if (gameOver) {
+      return;
+    }
     if (curr_tile > 0) {
       const new_grid = grid_state.map((row, i) => {
         if (i === curr_row) {
@@ -142,6 +145,9 @@ function App() {
   }
 
   const handleEnter = () => {
+    if (gameOver) {
+      return;
+    }
     setMessage("");
     if (curr_tile === 5 && curr_row < NUM_GUESSES) {
       const guess = grid_state[curr_row].join('');
@@ -174,6 +180,9 @@ function App() {
   }
 
   const addLetter = (letter) => {
+    if (gameOver) {
+      return;
+    }
     if (curr_tile < 5) {
       const new_grid = grid_state.map((row, i) => {
         if (i === curr_row) {
@@ -259,6 +268,9 @@ function App() {
   }
 
   const onClickHint = (hint) => {
+    if (gameOver) {
+      return;
+    }
     const new_grid = grid_state.map((row, i) => {
       if (i === curr_row) {
         const new_row = row.map((l, j) => {
